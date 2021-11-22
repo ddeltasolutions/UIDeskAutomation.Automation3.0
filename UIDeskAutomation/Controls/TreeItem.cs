@@ -124,7 +124,33 @@ namespace UIDeskAutomationLib
         /// </summary>
         public void Select()
         {
-            object selectionItemPatternObj = this.uiElement.GetCurrentPattern(UIA_PatternIds.UIA_SelectionItemPatternId);
+			this.BringToForeground();
+			try
+			{
+				this.BringIntoView();
+			}
+			catch { }
+			
+			// click the tree item to make sure all events are raised
+			string fwkid = this.uiElement.CurrentFrameworkId;
+			if (fwkid == "WPF")
+			{
+				UIDA_Label label = this.Label();
+				if (label != null)
+				{
+					label.Click();
+				}
+				else
+				{
+					this.Click();
+				}
+			}
+			else
+			{
+				this.Click();
+			}
+			
+            /*object selectionItemPatternObj = this.uiElement.GetCurrentPattern(UIA_PatternIds.UIA_SelectionItemPatternId);
             IUIAutomationSelectionItemPattern selectionItemPattern = selectionItemPatternObj as IUIAutomationSelectionItemPattern;
 
             if (selectionItemPattern == null)
@@ -133,7 +159,7 @@ namespace UIDeskAutomationLib
                 throw new Exception("TreeItem.Select() method failed");
             }
 
-            selectionItemPattern.Select();
+            selectionItemPattern.Select();*/
         }
 
         /// <summary>
