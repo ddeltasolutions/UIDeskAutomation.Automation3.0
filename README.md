@@ -16,9 +16,3 @@ edit.SetText("Some text");<br></b></i>
 
 You can find more information about this library <a href="http://automationspy.freecluster.eu/uideskautomation_unmanaged.html">HERE</a>.<br>
 Install the library from <a href="https://www.nuget.org/packages/UIDeskAutomation.Automation3.0/">Nuget</a>.
-
-You can use <a href="http://automationspy.freecluster.eu/UIDeskAutomation/UIDeskAutomationSpy.Automation3.0.zip">UIDeskAutomationSpy</a>, a tool that helps you find UI elements.
-
-You can download some <a href="http://automationspy.freecluster.eu/Samples.Automation3.0.zip">Samples</a>.
-
-Here is the <a href="http://automationspy.freecluster.eu/UIDeskAutomation/UIDeskAutomationHelp.chm">help file</a> for this library.
