@@ -28,3 +28,12 @@ You can automate Google Chrome and MS Edge browsers. For example navigate to a w
 browser.Navigate("wikipedia.org");<br>
 UIDA_HyperLink link = browser.Hyperlink("English*", true);<br>
 link.AccessLink();</b></i>
+
+<br><b>Resources</b><br>
+Samples: <a href="http://automationspy.freecluster.eu/Samples.Automation3.0.zip">http://automationspy.freecluster.eu/Samples.Automation3.0.zip</a>
+<br><br>
+CHM Help file: <a href="http://automationspy.freecluster.eu/UIDeskAutomation/UIDeskAutomation.Automation3.0_Help.chm">http://automationspy.freecluster.eu/UIDeskAutomation/UIDeskAutomation.Automation3.0_Help.chm</a>.<br>
+When you open the help file uncheck the "Always ask before opening this file" checkbox so you can view the content.
+<br><br>
+UIDeskAutomationSpy tool: <a href="http://automationspy.freecluster.eu/UIDeskAutomation/UIDeskAutomationSpy.Automation3.0.zip">http://automationspy.freecluster.eu/UIDeskAutomation/UIDeskAutomationSpy.Automation3.0.zip</a>.<br>
+If you encounter difficulties when opening this tool, right click on the spy executable file, choose Properties, check "Unblock" checkbox at the bottom of the dialog box, then Apply and OK.
