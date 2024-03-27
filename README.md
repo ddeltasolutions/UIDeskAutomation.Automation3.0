@@ -1,5 +1,5 @@
 # UIDeskAutomation.Automation3.0
-This is a .NET library that can be used to automate Windows desktop programs based on their user interface. It is created on top of unmanaged Microsoft UI Automation API (Windows Automation API 3.0 - the latest version of UI Automation)..
+This is a .NET library that can be used to automate Windows applications (both desktop and browser) based on their user interface. It is created on top of unmanaged Microsoft UI Automation API (Windows Automation API 3.0 - the latest version of UI Automation).
 
 Here is an example. You can start an application like this:
 
