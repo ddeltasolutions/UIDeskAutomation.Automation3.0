@@ -11,10 +11,9 @@ namespace UIDeskAutomationLib
     /// </summary>
     public class UIDA_ScrollBar: GenericSpinner
     {
-        public UIDA_ScrollBar(IUIAutomationElement el): base(el)
-        {
-            //this.uiElement = el;
-        }
+        public UIDA_ScrollBar(IUIAutomationElement el): base(el) {}
+		
+		private const int THIS_TIMEOUT = 1;
 
         /// <summary>
         /// Increments the value of ScrollBar. 
@@ -23,17 +22,74 @@ namespace UIDeskAutomationLib
         /// </summary>
         public void SmallIncrement()
         {
-            double smallChange = 0.0;
-
+			int timeout = Engine.GetInstance().Timeout;
+			Engine.GetInstance().Timeout = THIS_TIMEOUT;
+			
             try
             {
-                smallChange = base.GetSmallChange();
-                base.Value += smallChange;
+				string fid = this.uiElement.CurrentFrameworkId;
+				
+				if (fid == "" || fid == "Win32" || fid == "WinForm")
+				{
+					UIDA_Button btn = this.Button("Line down");
+					if (btn != null)
+					{
+						btn.Invoke();
+						return;
+					}
+					else
+					{
+						btn = this.Button("Column right");
+						if (btn != null)
+						{
+							btn.Invoke();
+							return;
+						}
+					}
+				}
+				
+				try
+				{
+					double smallChange = base.GetSmallChange();
+					double maximum = base.GetMaximum();
+					if (base.Value + smallChange <= maximum)
+					{
+						base.Value += smallChange;
+					}
+					else
+					{
+						base.Value = maximum;
+					}
+				}
+				catch
+				{
+					var btn = this.ButtonAt("", 4);
+					if (btn != null)
+					{
+						btn.Click();
+					}
+				}
             }
             catch (Exception ex)
             {
-                throw ex;
+				/*if (fid == "WinForm")
+				{
+					UIDA_Button btn = this.Button("Column right");
+					if (btn != null)
+					{
+						btn.Invoke();
+					}
+				}
+				else
+				{
+					throw ex;
+				}*/
+				Engine.TraceInLogFile("ScrollBar.SmallIncrement: " + ex.Message);
             }
+			finally
+			{
+				Engine.GetInstance().Timeout = timeout;
+			}
         }
 
         /// <summary>
@@ -44,15 +100,74 @@ namespace UIDeskAutomationLib
         /// </summary>
         public void LargeIncrement()
         {
+			int timeout = Engine.GetInstance().Timeout;
+			Engine.GetInstance().Timeout = THIS_TIMEOUT;
+			
             try
             {
-                double largeChange = base.GetLargeChange();
-                base.Value += largeChange;
+				string fid = this.uiElement.CurrentFrameworkId;
+				
+				if (fid == "" || fid == "Win32" || fid == "WinForm")
+				{
+					UIDA_Button btn = this.Button("Page down");
+					if (btn != null)
+					{
+						btn.Invoke();
+						return;
+					}
+					else
+					{
+						btn = this.Button("Page right");
+						if (btn != null)
+						{
+							btn.Invoke();
+							return;
+						}
+					}
+				}
+				
+				try
+				{
+					double largeChange = base.GetLargeChange();
+					double maximum = base.GetMaximum();
+					if (base.Value + largeChange <= maximum)
+					{
+						base.Value += largeChange;
+					}
+					else
+					{
+						base.Value = maximum;
+					}
+				}
+				catch
+				{
+					var btn = this.ButtonAt("", 3);
+					if (btn != null)
+					{
+						btn.Click();
+					}
+				}
             }
             catch (Exception ex)
             {
-                throw ex;
+				/*if (fid == "WinForm")
+				{
+					UIDA_Button btn = this.Button("Page right");
+					if (btn != null)
+					{
+						btn.Invoke();
+					}
+				}
+				else
+				{
+					throw ex;
+				}*/
+				Engine.TraceInLogFile("ScrollBar.LargeIncrement: " + ex.Message);
             }
+			finally
+			{
+				Engine.GetInstance().Timeout = timeout;
+			}
         }
 
         /// <summary>
@@ -62,15 +177,74 @@ namespace UIDeskAutomationLib
         /// </summary>
         public void SmallDecrement()
         {
+			int timeout = Engine.GetInstance().Timeout;
+			Engine.GetInstance().Timeout = THIS_TIMEOUT;
+			
             try
             {
-                double smallChange = base.GetSmallChange();
-                base.Value -= smallChange;
+				string fid = this.uiElement.CurrentFrameworkId;
+
+				if (fid == "" || fid == "Win32" || fid == "WinForm")
+				{
+					UIDA_Button btn = this.Button("Line up");
+					if (btn != null)
+					{
+						btn.Invoke();
+						return;
+					}
+					else
+					{
+						btn = this.Button("Column left");
+						if (btn != null)
+						{
+							btn.Invoke();
+							return;
+						}
+					}
+				}
+				
+				try
+				{
+					double smallChange = base.GetSmallChange();
+					double minimum = base.GetMinimum();
+					if (base.Value - smallChange >= minimum)
+					{
+						base.Value -= smallChange;
+					}
+					else
+					{
+						base.Value = minimum;
+					}
+				}
+				catch
+				{
+					var btn = this.ButtonAt("", 1);
+					if (btn != null)
+					{
+						btn.Click();
+					}
+				}
             }
             catch (Exception ex)
             {
-                throw ex;
+				/*if (fid == "WinForm")
+				{
+					UIDA_Button btn = this.Button("Column left");
+					if (btn != null)
+					{
+						btn.Invoke();
+					}
+				}
+				else
+				{
+					throw ex;
+				}*/
+				Engine.TraceInLogFile("ScrollBar.SmallDecrement: " + ex.Message);
             }
+			finally
+			{
+				Engine.GetInstance().Timeout = timeout;
+			}
         }
 
         /// <summary>
@@ -81,15 +255,74 @@ namespace UIDeskAutomationLib
         /// </summary>
         public void LargeDecrement()
         {
+			int timeout = Engine.GetInstance().Timeout;
+			Engine.GetInstance().Timeout = THIS_TIMEOUT;
+			
             try
             {
-                double largeChange = base.GetLargeChange();
-                base.Value -= largeChange;
+				string fid = this.uiElement.CurrentFrameworkId;
+
+				if (fid == "" || fid == "Win32" || fid == "WinForm")
+				{
+					UIDA_Button btn = this.Button("Page up");
+					if (btn != null)
+					{
+						btn.Invoke();
+						return;
+					}
+					else
+					{
+						btn = this.Button("Page left");
+						if (btn != null)
+						{
+							btn.Invoke();
+							return;
+						}
+					}
+				}
+				
+				try
+				{
+					double largeChange = base.GetLargeChange();
+					double minimum = base.GetMinimum();
+					if (base.Value - largeChange >= minimum)
+					{
+						base.Value -= largeChange;
+					}
+					else
+					{
+						base.Value = minimum;
+					}
+				}
+				catch
+				{
+					var btn = this.ButtonAt("", 2);
+					if (btn != null)
+					{
+						btn.Click();
+					}
+				}
             }
             catch (Exception ex)
             {
-                throw ex;
+				/*if (fid == "WinForm")
+				{
+					UIDA_Button btn = this.Button("Page left");
+					if (btn != null)
+					{
+						btn.Invoke();
+					}
+				}
+				else
+				{
+					throw ex;
+				}*/
+				Engine.TraceInLogFile("ScrollBar.LargeDecrement: " + ex.Message);
             }
+			finally
+			{
+				Engine.GetInstance().Timeout = timeout;
+			}
         }
 
         /// <summary>
@@ -111,12 +344,28 @@ namespace UIDeskAutomationLib
         }
         
         /// <summary>
-        /// Gets/Sets the value of the current scrollbar.
+        /// Gets/Sets the value of the scrollbar.
         /// </summary>
         new public double Value
         {
             get { return base.Value; }
             set { base.Value = value; }
         }
+		
+		/// <summary>
+        /// Attaches/detaches a handler to value changed event. You can cast the first parameter (sender - of type GenericSpinner) to an UIDA_ScrollBar object.
+		/// The second parameter (of type double) is the new value of the scroll bar.
+        /// </summary>
+		public event ValueChanged ValueChangedEvent
+		{
+			add
+			{
+				base.ValueChangedEvent += value;
+			}
+			remove
+			{
+				base.ValueChangedEvent -= value;
+			}
+		}
     }
 }

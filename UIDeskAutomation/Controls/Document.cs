@@ -19,5 +19,35 @@ namespace UIDeskAutomationLib
         {
             base.uiElement = el;
         }
+		
+		/// <summary>
+        /// Attaches/detaches a handler to text changed event
+        /// </summary>
+		public event TextChanged TextChangedEvent
+		{
+			add
+			{
+				base.TextChangedEvent += value;
+			}
+			remove
+			{
+				base.TextChangedEvent -= value;
+			}
+		}
+		
+		/// <summary>
+        /// Attaches/detaches a handler to text selection changed event
+        /// </summary>
+		public event TextSelectionChanged TextSelectionChangedEvent
+		{
+			add
+			{
+				base.TextSelectionChangedEvent += value;
+			}
+			remove
+			{
+				base.TextSelectionChangedEvent -= value;
+			}
+		}
     }
 }

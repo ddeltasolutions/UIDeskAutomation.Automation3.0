@@ -21,7 +21,14 @@ namespace UIDeskAutomationLib
         /// </summary>
         public void Press()
         {
-            base.Invoke();
+			try
+			{
+				base.Invoke();
+			}
+			catch
+			{
+				base.Click();
+			}
         }
     }
 }

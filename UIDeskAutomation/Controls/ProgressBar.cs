@@ -39,5 +39,21 @@ namespace UIDeskAutomationLib
         {
             return base.GetMaximum();
         }
+		
+		/// <summary>
+        /// Attaches/detaches a handler to value changed event. You can cast the first parameter (sender - of type GenericSpinner) to an UIDA_ProgressBar object.
+		/// The second parameter (of type double) is the new value of the progress bar.
+        /// </summary>
+		public event ValueChanged ValueChangedEvent
+		{
+			add
+			{
+				base.ValueChangedEvent += value;
+			}
+			remove
+			{
+				base.ValueChangedEvent -= value;
+			}
+		}
     }
 }

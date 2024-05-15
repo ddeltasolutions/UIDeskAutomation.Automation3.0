@@ -16,6 +16,28 @@ namespace UIDeskAutomationLib
             this.uiElement = el;
             this.parent = parent;
         }
+		
+		public UIDA_TabItem(IUIAutomationElement el)
+		{
+			this.uiElement = el;
+			
+			IUIAutomationTreeWalker tw = Engine.uiAutomation.ControlViewWalker;
+			IUIAutomationElement uiparent = tw.GetParentElement(this.uiElement);
+			
+			while (uiparent != null)
+			{
+				if (uiparent.CurrentControlType == UIA_ControlTypeIds.UIA_TabControlTypeId)
+				{
+					break;
+				}
+				uiparent = tw.GetParentElement(uiparent);
+			}
+			
+			if (uiparent != null)
+			{
+				this.parent = new UIDA_TabCtrl(uiparent);
+			}
+		}
 
         private UIDA_TabCtrl parent = null;
 
@@ -81,6 +103,10 @@ namespace UIDeskAutomationLib
         {
             get
             {
+				if (this.parent == null)
+				{
+					return -1; // this tab item is not part of a tab control
+				}
                 UIDA_TabItem[] tabItems = this.parent.Items;
 
                 for (int i = 0; i < tabItems.Length; i++)
@@ -97,5 +123,16 @@ namespace UIDeskAutomationLib
                 return -1;
             }
         }
+		
+		/// <summary>
+        /// Gets the text of the tab item. The same as calling GetText().
+        /// </summary>
+		public string Text
+		{
+			get
+			{
+				return this.GetText();
+			}
+		}
     }
 }

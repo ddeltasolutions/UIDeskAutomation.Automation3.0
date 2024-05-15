@@ -12,10 +12,7 @@ namespace UIDeskAutomationLib
     /// </summary>
     public class UIDA_Spinner: GenericSpinner
     {
-        public UIDA_Spinner(IUIAutomationElement el): base(el)
-        {
-            //this.uiElement = el;
-        }
+        public UIDA_Spinner(IUIAutomationElement el): base(el) {}
 
         /// <summary>
         /// Increment the value of spinner. Is like pressing the up arrow.
@@ -38,7 +35,8 @@ namespace UIDeskAutomationLib
             {
                 if (uiElement.CurrentFrameworkId == "WinForm" || uiElement.CurrentFrameworkId == "Win32")
                 {
-                    forwardButton.SimulateClick();
+                    //forwardButton.SimulateClick();
+					forwardButton.Click();
                     return;
                 }
                 
@@ -74,7 +72,8 @@ namespace UIDeskAutomationLib
             {
                 if (uiElement.CurrentFrameworkId == "WinForm" || uiElement.CurrentFrameworkId == "Win32")
                 {
-                    backwardButton.SimulateClick();
+                    //backwardButton.SimulateClick();
+					backwardButton.Click();
                     return;
                 }
                 
@@ -109,7 +108,7 @@ namespace UIDeskAutomationLib
         }
         
         /// <summary>
-        /// Gets/Sets the value of the current spinner.
+        /// Gets/Sets the value of the spinner.
         /// </summary>
         new public double Value
         {

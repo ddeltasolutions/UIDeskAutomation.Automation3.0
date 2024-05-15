@@ -366,7 +366,7 @@ namespace UIDeskAutomationLib
                     0, 0, 0);
             }
             
-            Engine.TraceInLogFile("date1 = " + date1.ToString());
+            //Engine.TraceInLogFile("date1 = " + date1.ToString());
             
             DateTime date2;
             try
@@ -380,7 +380,7 @@ namespace UIDeskAutomationLib
                     0, 0, 0);
             }
             
-            Engine.TraceInLogFile("date2 = " + date2.ToString());
+            //Engine.TraceInLogFile("date2 = " + date2.ToString());
             
             return new DateTime[] { date1, date2 };
         }
@@ -485,7 +485,6 @@ namespace UIDeskAutomationLib
                 throw new Exception("Insufficient rights");
             }
             
-            //Engine.TraceInLogFile("systemtime: " + systemtime.Year + " " + systemtime.Month + " " + systemtime.Day + " " + systemtime.Hour + " " + systemtime.Minute + " " + systemtime.Second);
             UnsafeNativeFunctions.SendMessage(handle, Win32CalendarMessages.MCM_SETCURSEL, IntPtr.Zero, hMem);
             
             UnsafeNativeFunctions.VirtualFreeEx(hProcess, hMem, Marshal.SizeOf(systemtime), 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UIAutomationClient;
+using System.IO;
 
 namespace UIDeskAutomationLib
 {
@@ -187,14 +188,6 @@ namespace UIDeskAutomationLib
             while (index != 0);
             
 			return (index == 0 ? crt : null);
-            /*if (index == 0)
-            {
-                return crt;
-            }
-            else
-            {
-                return null;
-            }*/
         }
         
         /// <summary>
@@ -451,5 +444,187 @@ namespace UIDeskAutomationLib
                 }
             }
         }
+		
+		private UIA_AutomationEventHandler UIA_ElementSelectedEventHandler = null;
+		
+		/// <summary>
+        /// Delegate for Element Selected event
+        /// </summary>
+		/// <param name="sender">The list that sent the event.</param>
+		/// <param name="selectedItem">the new selected list item</param>
+		public delegate void ElementSelected(UIDA_List sender, UIDA_ListItem selectedItem);
+		internal ElementSelected ElementSelectedHandler = null;
+		
+		/// <summary>
+        /// Attaches/detaches a handler to element selected event
+        /// </summary>
+		public event ElementSelected ElementSelectedEvent
+		{
+			add
+			{
+				try
+				{
+					if (this.ElementSelectedHandler == null)
+					{
+						this.UIA_ElementSelectedEventHandler = new UIA_AutomationEventHandler(this);
+						
+						Engine.uiAutomation.AddAutomationEventHandler(UIA_EventIds.UIA_SelectionItem_ElementSelectedEventId, 
+							base.uiElement, TreeScope.TreeScope_Subtree, null, this.UIA_ElementSelectedEventHandler);
+					}
+					
+					this.ElementSelectedHandler += value;
+				}
+				catch {}
+			}
+			remove
+			{
+				try
+				{
+					this.ElementSelectedHandler -= value;
+				
+					if (this.ElementSelectedHandler == null)
+					{
+						if (this.UIA_ElementSelectedEventHandler == null)
+						{
+							return;
+						}
+						
+						System.Threading.Tasks.Task.Run(() => 
+						{
+							try
+							{
+								Engine.uiAutomation.RemoveAutomationEventHandler(UIA_EventIds.UIA_SelectionItem_ElementSelectedEventId, 
+									base.uiElement, this.UIA_ElementSelectedEventHandler);
+								UIA_ElementSelectedEventHandler = null;
+							}
+							catch { }
+						}).Wait(5000);
+					}
+				}
+				catch {}
+			}
+		}
+		
+		private UIA_AutomationEventHandler UIA_ElementAddedToSelectionEventHandler = null;
+		
+		/// <summary>
+        /// Delegate for Element Added To Selection event
+        /// </summary>
+		/// <param name="sender">The list that sent the event.</param>
+		/// <param name="itemAdded">the list item added to selection</param>
+		public delegate void ElementAddedToSelection(UIDA_List sender, UIDA_ListItem itemAdded);
+		internal ElementAddedToSelection ElementAddedToSelectionHandler = null;
+		
+		/// <summary>
+        /// Attaches/detaches a handler to element added to selection event
+        /// </summary>
+		public event ElementAddedToSelection ElementAddedToSelectionEvent
+		{
+			add
+			{
+				try
+				{
+					if (this.ElementAddedToSelectionHandler == null)
+					{
+						this.UIA_ElementAddedToSelectionEventHandler = new UIA_AutomationEventHandler(this);
+		
+						Engine.uiAutomation.AddAutomationEventHandler(UIA_EventIds.UIA_SelectionItem_ElementAddedToSelectionEventId, 
+							base.uiElement, TreeScope.TreeScope_Subtree, null, this.UIA_ElementAddedToSelectionEventHandler);
+					}
+					
+					this.ElementAddedToSelectionHandler += value;
+				}
+				catch {}
+			}
+			remove
+			{
+				try
+				{
+					this.ElementAddedToSelectionHandler -= value;
+				
+					if (this.ElementAddedToSelectionHandler == null)
+					{
+						if (this.UIA_ElementAddedToSelectionEventHandler == null)
+						{
+							return;
+						}
+						
+						System.Threading.Tasks.Task.Run(() => 
+						{
+							try
+							{
+								Engine.uiAutomation.RemoveAutomationEventHandler(
+									UIA_EventIds.UIA_SelectionItem_ElementAddedToSelectionEventId, 
+									base.uiElement, this.UIA_ElementAddedToSelectionEventHandler);
+								UIA_ElementAddedToSelectionEventHandler = null;
+							}
+							catch { }
+						}).Wait(5000);
+					}
+				}
+				catch {}
+			}
+		}
+		
+		private UIA_AutomationEventHandler UIA_ElementRemovedFromSelectionEventHandler = null;
+		
+		/// <summary>
+        /// Delegate for Element Removed From Selection event
+        /// </summary>
+		/// <param name="sender">The list that sent the event.</param>
+		/// <param name="itemRemoved">the list item removed from selection</param>
+		public delegate void ElementRemovedFromSelection(UIDA_List sender, UIDA_ListItem itemRemoved);
+		internal ElementRemovedFromSelection ElementRemovedFromSelectionHandler = null;
+		
+		/// <summary>
+        /// Attaches/detaches a handler to element removed from selection event
+        /// </summary>
+		public event ElementRemovedFromSelection ElementRemovedFromSelectionEvent
+		{
+			add
+			{
+				try
+				{
+					if (this.ElementRemovedFromSelectionHandler == null)
+					{
+						this.UIA_ElementRemovedFromSelectionEventHandler = new UIA_AutomationEventHandler(this);
+		
+						Engine.uiAutomation.AddAutomationEventHandler(UIA_EventIds.UIA_SelectionItem_ElementRemovedFromSelectionEventId, 
+							base.uiElement, TreeScope.TreeScope_Subtree, null, this.UIA_ElementRemovedFromSelectionEventHandler);
+					}
+					
+					this.ElementRemovedFromSelectionHandler += value;
+				}
+				catch {}
+			}
+			remove
+			{
+				try
+				{
+					this.ElementRemovedFromSelectionHandler -= value;
+				
+					if (this.ElementRemovedFromSelectionHandler == null)
+					{
+						if (this.UIA_ElementRemovedFromSelectionEventHandler == null)
+						{
+							return;
+						}
+						
+						System.Threading.Tasks.Task.Run(() => 
+						{
+							try
+							{
+								Engine.uiAutomation.RemoveAutomationEventHandler(
+									UIA_EventIds.UIA_SelectionItem_ElementRemovedFromSelectionEventId, 
+									base.uiElement, this.UIA_ElementRemovedFromSelectionEventHandler);
+								UIA_ElementRemovedFromSelectionEventHandler = null;
+							}
+							catch { }
+						}).Wait(5000);
+					}
+				}
+				catch {}
+			}
+		}
     }
 }

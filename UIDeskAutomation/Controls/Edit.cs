@@ -8,7 +8,7 @@ using UIAutomationClient;
 namespace UIDeskAutomationLib
 {
     /// <summary>
-    /// Represents an EditBox UI element
+    /// Represents an Edit UI element
     /// </summary>
     public class UIDA_Edit : ElementBase
     {
@@ -27,7 +27,7 @@ namespace UIDeskAutomationLib
         }
 
         /// <summary>
-        /// Sets text to this EditBox element
+        /// Sets text to this Edit element
         /// </summary>
         /// <param name="text">text to set</param>
         public void SetText(string text)
@@ -101,9 +101,9 @@ namespace UIDeskAutomationLib
         }
 
         /// <summary>
-        /// Gets the text of this EditBox element
+        /// Gets the text of this Edit element
         /// </summary>
-        /// <returns>the text of this EditBox element</returns>
+        /// <returns>the text of this Edit element</returns>
         public new string GetText()
         {
             if (this.IsAlive == false)
@@ -244,6 +244,11 @@ namespace UIDeskAutomationLib
             
             if (textPattern == null)
             {
+				// try Ctrl+A
+				this.KeyDown(VirtualKeys.Control);
+				this.KeyPress(VirtualKeys.A);
+				this.KeyUp(VirtualKeys.Control);
+				//this.SendKeys("^a");
                 return;
             }
 
@@ -315,5 +320,200 @@ namespace UIDeskAutomationLib
                 }
             }
         }
+		
+		/// <summary>
+        /// Gets the selected text from the edit control. Returns null if cannot get the selected text.
+        /// </summary>
+		/// <returns>the selected text of this Edit element</returns>
+        public string GetSelectedText()
+		{
+			IUIAutomationTextPattern textPattern = this.uiElement.GetCurrentPattern(UIA_PatternIds.UIA_TextPatternId) as IUIAutomationTextPattern;
+            if (textPattern == null)
+			{
+				return null;
+			}
+			
+			IUIAutomationTextRangeArray selections = null;
+            try
+            {
+                selections = textPattern.GetSelection();
+            }
+            catch { }
+			if (selections == null || selections.Length == 0)
+            {
+                return null;
+            }
+			
+			try
+			{
+				IUIAutomationTextRange selection = selections.GetElement(0);
+				return selection.GetText(-1);
+			}
+			catch {}
+			return null;
+		}
+		
+		private UIA_AutomationEventHandler UIA_TextChangedEventHandler = null;
+		private UIA_AutomationEventHandler UIA_TextSelectionChangedEventHandler = null;
+		private UIA_AutomationPropertyChangedEventHandler UIA_TextChangedEventHandlerWin32 = null;
+		
+		/// <summary>
+        /// Delegate for Text Changed event
+        /// </summary>
+		/// <param name="sender">The edit control that sent the event</param>
+		/// <param name="text">the text of the edit control</param>
+		public delegate void TextChanged(UIDA_Edit sender, string text);
+		internal TextChanged TextChangedHandler = null;
+		
+		/// <summary>
+        /// Delegate for Text Selection Changed event
+        /// </summary>
+		/// <param name="sender">The edit control that sent the event</param>
+		/// <param name="selectedText">the selected text</param>
+		public delegate void TextSelectionChanged(UIDA_Edit sender, string selectedText);
+		internal TextSelectionChanged TextSelectionChangedHandler = null;
+		
+		/// <summary>
+        /// Attaches/detaches a handler to text changed event
+        /// </summary>
+		public event TextChanged TextChangedEvent
+		{
+			add
+			{
+				try
+				{
+					if (this.TextChangedHandler == null)
+					{
+						string cfid = base.uiElement.CurrentFrameworkId;
+						if (cfid == "Win32" || cfid == "WinForm")
+						{
+							this.UIA_TextChangedEventHandlerWin32 = new UIA_AutomationPropertyChangedEventHandler(this);
+						
+							Engine.uiAutomation.AddPropertyChangedEventHandler(base.uiElement, TreeScope.TreeScope_Element, 
+								null, this.UIA_TextChangedEventHandlerWin32, new int[] { UIA_PropertyIds.UIA_ValueValuePropertyId });
+						}
+						else
+						{
+							this.UIA_TextChangedEventHandler = new UIA_AutomationEventHandler(this);
+						
+							Engine.uiAutomation.AddAutomationEventHandler(UIA_EventIds.UIA_Text_TextChangedEventId, 
+								base.uiElement, TreeScope.TreeScope_Element, null, this.UIA_TextChangedEventHandler);
+						}
+					}
+					
+					this.TextChangedHandler += value;
+				}
+				catch {}
+			}
+			remove
+			{
+				try
+				{
+					this.TextChangedHandler -= value;
+				
+					if (this.TextChangedHandler == null)
+					{
+						string cfid = base.uiElement.CurrentFrameworkId;
+						if (cfid == "Win32" || cfid == "WinForm")
+						{
+							RemoveEventHandlerWin32();
+						}
+						else
+						{
+							RemoveEventHandler();
+						}
+					}
+				}
+				catch {}
+			}
+		}
+		
+		/// <summary>
+        /// Attaches/detaches a handler to text selection changed event
+        /// </summary>
+		public event TextSelectionChanged TextSelectionChangedEvent
+		{
+			add
+			{
+				try
+				{
+					if (this.TextSelectionChangedHandler == null)
+					{
+						this.UIA_TextSelectionChangedEventHandler = new UIA_AutomationEventHandler(this);
+					
+						Engine.uiAutomation.AddAutomationEventHandler(UIA_EventIds.UIA_Text_TextSelectionChangedEventId, 
+							base.uiElement, TreeScope.TreeScope_Element, null, this.UIA_TextSelectionChangedEventHandler);
+					}
+					
+					this.TextSelectionChangedHandler += value;
+				}
+				catch {}
+			}
+			remove
+			{
+				try
+				{
+					this.TextSelectionChangedHandler -= value;
+				
+					if (this.TextSelectionChangedHandler == null)
+					{
+						if (this.UIA_TextSelectionChangedEventHandler == null)
+						{
+							return;
+						}
+						
+						System.Threading.Tasks.Task.Run(() => 
+						{
+							try
+							{
+								Engine.uiAutomation.RemoveAutomationEventHandler(UIA_EventIds.UIA_Text_TextSelectionChangedEventId, 
+									base.uiElement, this.UIA_TextSelectionChangedEventHandler);
+								UIA_TextSelectionChangedEventHandler = null;
+							}
+							catch { }
+						}).Wait(5000);
+					}
+				}
+				catch {}
+			}
+		}
+		
+		private void RemoveEventHandlerWin32()
+		{
+			if (this.UIA_TextChangedEventHandlerWin32 == null)
+			{
+				return;
+			}
+			
+			System.Threading.Tasks.Task.Run(() => 
+			{
+				try
+				{
+					Engine.uiAutomation.RemovePropertyChangedEventHandler(base.uiElement, 
+						this.UIA_TextChangedEventHandlerWin32);
+					UIA_TextChangedEventHandlerWin32 = null;
+				}
+				catch { }
+			}).Wait(5000);
+		}
+		
+		private void RemoveEventHandler()
+		{
+			if (this.UIA_TextChangedEventHandler == null)
+			{
+				return;
+			}
+			
+			System.Threading.Tasks.Task.Run(() => 
+			{
+				try
+				{
+					Engine.uiAutomation.RemoveAutomationEventHandler(UIA_EventIds.UIA_Text_TextChangedEventId, 
+						base.uiElement, this.UIA_TextChangedEventHandler);
+					UIA_TextChangedEventHandler = null;
+				}
+				catch { }
+			}).Wait(5000);
+		}
     }
 }

@@ -445,5 +445,72 @@ namespace UIDeskAutomationLib
 				return this.GetText();
 			}
 		}
+		
+		private UIA_AutomationPropertyChangedEventHandler UIA_StateChangedEventHandler = null;
+		/// <summary>
+        /// Delegate for State Changed event
+        /// </summary>
+		/// <param name="sender">The checkbox that sent the event</param>
+		/// <param name="newState">true if checkbox is checked, false if not checked and null if it's in an indeterminate state</param>
+		public delegate void StateChanged(UIDA_CheckBox sender, bool? newState);
+		internal StateChanged StateChangedHandler = null;
+		
+		/// <summary>
+        /// Attaches/detaches a handler to checked state changed event
+        /// </summary>
+		public event StateChanged StateChangedEvent
+		{
+			add
+			{
+				try
+				{
+					if (this.StateChangedHandler == null)
+					{
+						this.UIA_StateChangedEventHandler = new UIA_AutomationPropertyChangedEventHandler(this);
+			
+						if (base.uiElement.CurrentFrameworkId == "WinForm")
+						{
+							Engine.uiAutomation.AddPropertyChangedEventHandler(base.uiElement, TreeScope.TreeScope_Element, 
+								null, this.UIA_StateChangedEventHandler, new int[] { UIA_PropertyIds.UIA_NamePropertyId });
+						}
+						else
+						{
+							Engine.uiAutomation.AddPropertyChangedEventHandler(base.uiElement, TreeScope.TreeScope_Element, 
+								null, this.UIA_StateChangedEventHandler, new int[] { UIA_PropertyIds.UIA_ToggleToggleStatePropertyId });
+						}
+					}
+					
+					this.StateChangedHandler += value;
+				}
+				catch {}
+			}
+			remove
+			{
+				try
+				{
+					this.StateChangedHandler -= value;
+				
+					if (this.StateChangedHandler == null)
+					{
+						if (this.UIA_StateChangedEventHandler == null)
+						{
+							return;
+						}
+						
+						System.Threading.Tasks.Task.Run(() => 
+						{
+							try
+							{
+								Engine.uiAutomation.RemovePropertyChangedEventHandler(base.uiElement, 
+									this.UIA_StateChangedEventHandler);
+								UIA_StateChangedEventHandler = null;
+							}
+							catch { }
+						}).Wait(5000);
+					}
+				}
+				catch {}
+			}
+		}
     }
 }

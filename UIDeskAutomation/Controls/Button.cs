@@ -34,7 +34,14 @@ namespace UIDeskAutomationLib
 			}
 			else
 			{
-				base.Invoke();
+				try
+				{
+					base.Invoke();
+				}
+				catch
+				{
+					base.Click();
+				}
 			}
         }
 		
@@ -99,5 +106,103 @@ namespace UIDeskAutomationLib
                 throw new Exception("Could not get the pressed state of the button. This is supported only for toggle buttons.");
             }*/
         }
+		
+		private UIA_AutomationEventHandler UIA_ClickedEventHandler = null;
+		private UIA_AutomationPropertyChangedEventHandler UIA_PropertyChangedEventHandler = null;
+		/// <summary>
+        /// Delegate for clicked event
+        /// </summary>
+		/// <param name="sender">The button that sent the event</param>
+		public delegate void Clicked(UIDA_Button sender);
+		internal Clicked ClickedHandler = null;
+		
+		/// <summary>
+        /// Attaches/detaches a handler to click event
+        /// </summary>
+		public event Clicked ClickedEvent
+		{
+			add
+			{
+				try
+				{
+					if (this.ClickedHandler == null)
+					{
+						if (base.uiElement.CurrentFrameworkId == "WinForm")
+						{
+							this.UIA_PropertyChangedEventHandler = new UIA_AutomationPropertyChangedEventHandler(this);
+							Engine.uiAutomation.AddPropertyChangedEventHandler(base.uiElement, TreeScope.TreeScope_Element, 
+								null, this.UIA_PropertyChangedEventHandler, new int[] { UIA_PropertyIds.UIA_NamePropertyId });
+						}
+						else
+						{
+							this.UIA_ClickedEventHandler = new UIA_AutomationEventHandler(this);
+							Engine.uiAutomation.AddAutomationEventHandler(UIA_EventIds.UIA_Invoke_InvokedEventId, 
+								base.uiElement, TreeScope.TreeScope_Element, null, this.UIA_ClickedEventHandler);
+						}
+					}
+					
+					this.ClickedHandler += value;
+				}
+				catch {}
+			}
+			remove
+			{
+				try
+				{
+					this.ClickedHandler -= value;
+				
+					if (this.ClickedHandler == null)
+					{
+						if (base.uiElement.CurrentFrameworkId == "WinForm")
+						{
+							RemoveEventHandlerWinForm();
+						}
+						else
+						{
+							RemoveEventHandler();
+						}
+					}
+				}
+				catch {}
+			}
+		}
+		
+		private void RemoveEventHandlerWinForm()
+		{
+			if (this.UIA_PropertyChangedEventHandler == null)
+			{
+				return;
+			}
+			
+			System.Threading.Tasks.Task.Run(() => 
+			{
+				try
+				{
+					Engine.uiAutomation.RemovePropertyChangedEventHandler(base.uiElement, 
+						this.UIA_PropertyChangedEventHandler);
+					UIA_PropertyChangedEventHandler = null;
+				}
+				catch { }
+			}).Wait(5000);
+		}
+		
+		private void RemoveEventHandler()
+		{
+			if (this.UIA_ClickedEventHandler == null)
+			{
+				return;
+			}
+			
+			System.Threading.Tasks.Task.Run(() => 
+			{
+				try
+				{
+					Engine.uiAutomation.RemoveAutomationEventHandler(UIA_EventIds.UIA_Invoke_InvokedEventId, 
+						base.uiElement, this.UIA_ClickedEventHandler);
+					UIA_ClickedEventHandler = null;
+				}
+				catch { }
+			}).Wait(5000);
+		}
     }
 }

@@ -215,8 +215,6 @@ namespace UIDeskAutomationLib
 
                 if (get == true)
                 {
-                    //string returnValue = string.Empty;
-
                     try
                     {
                         string returnValue = valuePattern.CurrentValue;

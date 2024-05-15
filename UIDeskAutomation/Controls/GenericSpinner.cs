@@ -388,5 +388,73 @@ namespace UIDeskAutomationLib
                 throw new Exception("GetLargeChange() method failed: " + ex.Message);
             }
         }
+		
+		private UIA_AutomationPropertyChangedEventHandler UIA_ValueChangedEventHandler = null;
+		
+		/// <summary>
+        /// Delegate for Value Changed event
+        /// </summary>
+		/// <param name="sender">The control that sent the event. It can be a progress bar, scroll bar or a slider. You can cast it (using the as operator) to one of these types.</param>
+		/// <param name="newValue">the new value of the control</param>
+		public delegate void ValueChanged(GenericSpinner sender, double newValue);
+		internal ValueChanged ValueChangedHandler = null;
+		
+		/// <summary>
+        /// Attaches/detaches a handler to value changed event
+        /// </summary>
+		public event ValueChanged ValueChangedEvent
+		{
+			add
+			{
+				try
+				{
+					if (this.ValueChangedHandler == null)
+					{
+						this.UIA_ValueChangedEventHandler = new UIA_AutomationPropertyChangedEventHandler(this);
+			
+						if (base.uiElement.CurrentFrameworkId == "WinForm")
+						{
+							Engine.uiAutomation.AddPropertyChangedEventHandler(base.uiElement, TreeScope.TreeScope_Element, 
+								null, this.UIA_ValueChangedEventHandler, new int[] { UIA_PropertyIds.UIA_ValueValuePropertyId });
+						}
+						else
+						{
+							Engine.uiAutomation.AddPropertyChangedEventHandler(base.uiElement, TreeScope.TreeScope_Element, 
+								null, this.UIA_ValueChangedEventHandler, new int[] { UIA_PropertyIds.UIA_RangeValueValuePropertyId });
+						}
+					}
+					
+					this.ValueChangedHandler += value;
+				}
+				catch {}
+			}
+			remove
+			{
+				try
+				{
+					this.ValueChangedHandler -= value;
+				
+					if (this.ValueChangedHandler == null)
+					{
+						if (this.UIA_ValueChangedEventHandler == null)
+						{
+							return;
+						}
+						
+						System.Threading.Tasks.Task.Run(() => 
+						{
+							try
+							{
+								Engine.uiAutomation.RemovePropertyChangedEventHandler(base.uiElement, 
+									this.UIA_ValueChangedEventHandler);
+								UIA_ValueChangedEventHandler = null;
+							}
+							catch { }
+						}).Wait(5000);
+					}
+				}
+				catch {}
+			}
+		}
     }
 }

@@ -21,7 +21,14 @@ namespace UIDeskAutomationLib
         /// </summary>
         public void AccessLink()
         {
-            base.Invoke();
+			try
+			{
+				base.Invoke();
+			}
+			catch
+			{
+				base.Click();
+			}
         }
     }
 }

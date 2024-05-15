@@ -224,6 +224,17 @@ namespace UIDeskAutomationLib
         /// <param name="text">text to set</param>
         public void SetText(string text)
         {
+			IUIAutomationValuePattern valuePattern = uiElement.GetCurrentPattern(UIA_PatternIds.UIA_ValuePatternId) as IUIAutomationValuePattern;
+			if (valuePattern != null)
+			{
+				try
+				{
+					valuePattern.SetValue(text);
+					return;
+				}
+				catch {}
+			}
+		
             UIDA_Edit edit = this.Edit();
 
             if (edit == null)
@@ -236,7 +247,7 @@ namespace UIDeskAutomationLib
         }
 
         /// <summary>
-        /// Gets the selected ComboBox item.
+        /// Gets the selected ComboBox item. If this returns null you can try the Text property to get the text of the selected item.
         /// </summary>
         public UIDA_ListItem SelectedItem
         {
@@ -272,6 +283,17 @@ namespace UIDeskAutomationLib
                 return null;
             }
         }
+		
+		/// <summary>
+        /// Gets the text of the selected item.
+        /// </summary>
+		public string Text
+		{
+			get
+			{
+				return this.GetText();
+			}
+		}
         
         /// <summary>
         /// Expands the combobox.
@@ -336,17 +358,29 @@ namespace UIDeskAutomationLib
                 Engine.TraceInLogFile("Item not found");
                 throw new Exception("Item not found");
             }
-            if (fid == "WinForm" || fid == "Win32")
+			
+            if (fid == "Win32" || fid == "WinForm")
             {
                 listItem.BringIntoView();
-                listItem.SimulateClick();
+				//listItem.Click();
+				
+				try
+				{
+					tagRECT boundingRect = listItem.uiElement.CurrentBoundingRectangle;
+					Engine.GetInstance().ClickScreenCoordinatesAt( (boundingRect.left + boundingRect.right) / 2, 
+						(boundingRect.top + boundingRect.bottom) / 2 );
+				}
+				catch
+				{
+					listItem.KeyPress(VirtualKeys.Enter);
+				}
             }
             else
             {
                 listItem.Select();
             }
             
-            if (fid == "WPF")
+			if (fid == "WPF")
             {
                 Collapse();
             }
@@ -373,10 +407,21 @@ namespace UIDeskAutomationLib
                 throw new Exception("Item not found");
             }
             
-            if (fid == "WinForm" || fid == "Win32")
+            if (fid == "Win32" || fid == "WinForm")
             {
                 listItem.BringIntoView();
-                listItem.SimulateClick();
+				//listItem.Click();
+				
+				try
+				{
+					tagRECT boundingRect = listItem.uiElement.CurrentBoundingRectangle;
+					Engine.GetInstance().ClickScreenCoordinatesAt( (boundingRect.left + boundingRect.right) / 2, 
+						(boundingRect.top + boundingRect.bottom) / 2 );
+				}
+				catch
+				{
+					listItem.KeyPress(VirtualKeys.Enter);
+				}
             }
             else
             {
@@ -388,5 +433,108 @@ namespace UIDeskAutomationLib
                 Collapse();
             }
         }
+		
+		private UIA_AutomationPropertyChangedEventHandler UIA_SelectionChangedEventHandler = null;
+		private UIA_AutomationEventHandler UIA_ElementSelectedEventHandler = null;
+		/// <summary>
+        /// Delegate for Selection Changed event
+        /// </summary>
+		/// <param name="sender">The ComboBox that sent the event</param>
+		/// <param name="selectedItem">the text of the selected item</param>
+		public delegate void SelectionChanged(UIDA_ComboBox sender, string selectedItem);
+		internal SelectionChanged SelectionChangedHandle = null;
+		
+		/// <summary>
+        /// Attaches/detaches a handler to selection changed event
+        /// </summary>
+		public event SelectionChanged SelectionChangedEvent
+		{
+			add
+			{
+				try
+				{
+					if (this.SelectionChangedHandle == null)
+					{
+						string cfid = base.uiElement.CurrentFrameworkId;
+						if (cfid == "WinForm" || cfid == "XAML")
+						{
+							this.UIA_ElementSelectedEventHandler = new UIA_AutomationEventHandler(this);
+						
+							Engine.uiAutomation.AddAutomationEventHandler(UIA_EventIds.UIA_SelectionItem_ElementSelectedEventId, 
+								base.uiElement, TreeScope.TreeScope_Subtree, null, this.UIA_ElementSelectedEventHandler);
+						}
+						else
+						{
+							this.UIA_SelectionChangedEventHandler = new UIA_AutomationPropertyChangedEventHandler(this);
+						
+							Engine.uiAutomation.AddPropertyChangedEventHandler(base.uiElement, TreeScope.TreeScope_Element, 
+								null, this.UIA_SelectionChangedEventHandler, new int[] { UIA_PropertyIds.UIA_ValueValuePropertyId });
+						}
+					}
+					
+					this.SelectionChangedHandle += value;
+				}
+				catch {}
+			}
+			remove
+			{
+				try
+				{
+					this.SelectionChangedHandle -= value;
+				
+					if (this.SelectionChangedHandle == null)
+					{
+						string cfid = base.uiElement.CurrentFrameworkId;
+						if (cfid == "WinForm" || cfid == "XAML")
+						{
+							RemoveEventHandlerWinForm();
+						}
+						else
+						{
+							RemoveEventHandler();
+						}
+					}
+				}
+				catch {}
+			}
+		}
+		
+		private void RemoveEventHandlerWinForm()
+		{
+			if (this.UIA_ElementSelectedEventHandler == null)
+			{
+				return;
+			}
+			
+			System.Threading.Tasks.Task.Run(() => 
+			{
+				try
+				{
+					Engine.uiAutomation.RemoveAutomationEventHandler(UIA_EventIds.UIA_SelectionItem_ElementSelectedEventId, 
+						base.uiElement, this.UIA_ElementSelectedEventHandler);
+					UIA_ElementSelectedEventHandler = null;
+				}
+				catch { }
+			}).Wait(5000);
+		}
+		
+		private void RemoveEventHandler()
+		{
+			if (this.UIA_SelectionChangedEventHandler == null)
+			{
+				return;
+			}
+			
+			System.Threading.Tasks.Task.Run(() => 
+			{
+				try
+				{
+					Engine.uiAutomation.RemovePropertyChangedEventHandler(base.uiElement, 
+						this.UIA_SelectionChangedEventHandler);
+					UIA_SelectionChangedEventHandler = null;
+				}
+				catch { }
+			}).Wait(5000);
+		}
     }
 }

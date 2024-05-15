@@ -22,7 +22,14 @@ namespace UIDeskAutomationLib
         /// </summary>
         public void AccessMenu()
         {
-            base.Invoke();
+			try
+			{
+				base.Invoke();
+			}
+			catch
+			{
+				base.Click();
+			}
         }
 
         /// <summary>
@@ -205,9 +212,6 @@ namespace UIDeskAutomationLib
 
 				try
 				{
-					/*if (((value == true) && (togglePattern.CurrentToggleState != ToggleState.ToggleState_On)) ||
-						((value == false) && (togglePattern.CurrentToggleState == ToggleState.ToggleState_On)))*/
-						
 					if (((value == true) && (togglePattern.CurrentToggleState != ToggleState.ToggleState_On)) ||
 						((value == false) && (togglePattern.CurrentToggleState != ToggleState.ToggleState_Off)))
 					{
@@ -230,6 +234,156 @@ namespace UIDeskAutomationLib
 			get
 			{
 				return this.GetText();
+			}
+		}
+		
+		private UIA_AutomationEventHandler UIA_MenuOpenedEventHandler = null;
+		private UIA_AutomationPropertyChangedEventHandler UIA_ExpandedEventHandler = null;
+		
+		/// <summary>
+        /// Delegate for Expanded event
+        /// </summary>
+		/// <param name="sender">The menu item that sent the event.</param>
+		public delegate void Expanded(UIDA_MenuItem sender);
+		internal Expanded ExpandedHandler = null;
+		
+		/// <summary>
+        /// Attaches/detaches a handler to expanded event
+        /// </summary>
+		public event Expanded ExpandedEvent
+		{
+			add
+			{
+				try
+				{
+					if (this.ExpandedHandler == null)
+					{
+						if (base.uiElement.CurrentFrameworkId == "WinForm")
+						{
+							this.UIA_MenuOpenedEventHandler = new UIA_AutomationEventHandler(this);
+		
+							Engine.uiAutomation.AddAutomationEventHandler(UIA_EventIds.UIA_MenuOpenedEventId, 
+								base.uiElement, TreeScope.TreeScope_Subtree, null, this.UIA_MenuOpenedEventHandler);
+						}
+						else
+						{
+							this.UIA_ExpandedEventHandler = new UIA_AutomationPropertyChangedEventHandler(this);
+				
+							Engine.uiAutomation.AddPropertyChangedEventHandler(base.uiElement, TreeScope.TreeScope_Element, 
+								null, this.UIA_ExpandedEventHandler, new int[] { UIA_PropertyIds.UIA_ExpandCollapseExpandCollapseStatePropertyId });
+						}
+					}
+					
+					this.ExpandedHandler += value;
+				}
+				catch {}
+			}
+			remove
+			{
+				try
+				{
+					this.ExpandedHandler -= value;
+				
+					if (this.ExpandedHandler == null)
+					{
+						if (base.uiElement.CurrentFrameworkId == "WinForm")
+						{
+							if (this.UIA_MenuOpenedEventHandler == null)
+							{
+								return;
+							}
+							
+							System.Threading.Tasks.Task.Run(() => 
+							{
+								try
+								{
+									Engine.uiAutomation.RemoveAutomationEventHandler(UIA_EventIds.UIA_MenuOpenedEventId, 
+										base.uiElement, this.UIA_MenuOpenedEventHandler);
+									UIA_MenuOpenedEventHandler = null;
+								}
+								catch { }
+							}).Wait(5000);
+						}
+						else
+						{
+							if (this.UIA_ExpandedEventHandler == null)
+							{
+								return;
+							}
+							
+							System.Threading.Tasks.Task.Run(() => 
+							{
+								try
+								{
+									Engine.uiAutomation.RemovePropertyChangedEventHandler(base.uiElement, 
+										this.UIA_ExpandedEventHandler);
+									UIA_ExpandedEventHandler = null;
+								}
+								catch { }
+							}).Wait(5000);
+						}
+					}
+				}
+				catch {}
+			}
+		}
+		
+		private UIA_AutomationEventHandler UIA_ClickedEventHandler = null;
+		
+		/// <summary>
+        /// Delegate for Clicked event
+        /// </summary>
+		/// <param name="sender">The menu item that sent the event.</param>
+		public delegate void Clicked(UIDA_MenuItem sender);
+		internal Clicked ClickedHandler = null;
+		
+		/// <summary>
+        /// Attaches/detaches a handler to click event
+        /// </summary>
+		public event Clicked ClickedEvent
+		{
+			add
+			{
+				try
+				{
+					if (this.ClickedHandler == null)
+					{
+						this.UIA_ClickedEventHandler = new UIA_AutomationEventHandler(this);
+		
+						Engine.uiAutomation.AddAutomationEventHandler(UIA_EventIds.UIA_Invoke_InvokedEventId, 
+							base.uiElement, TreeScope.TreeScope_Element, null, this.UIA_ClickedEventHandler);
+					}
+					
+					this.ClickedHandler += value;
+				}
+				catch {}
+			}
+			remove
+			{
+				try
+				{
+					this.ClickedHandler -= value;
+				
+					if (this.ClickedHandler == null)
+					{
+						if (this.UIA_ClickedEventHandler == null)
+						{
+							return;
+						}
+						
+						System.Threading.Tasks.Task.Run(() => 
+						{
+							try
+							{
+								Engine.uiAutomation.RemoveAutomationEventHandler(UIA_EventIds.UIA_Invoke_InvokedEventId, 
+									base.uiElement, this.UIA_ClickedEventHandler);
+								UIA_ClickedEventHandler = null;
+							}
+							catch { }
+						}).Wait(5000);
+					}
+				}
+				catch {}
 			}
 		}
     }

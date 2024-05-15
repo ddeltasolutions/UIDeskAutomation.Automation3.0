@@ -93,6 +93,27 @@ namespace UIDeskAutomationLib
                 return expandCollapsePattern.CurrentExpandCollapseState;
 			}
 		}
+		
+		/// <summary>
+        /// Returns true if the TreeItem is expanded.
+        /// </summary>
+        /// <returns>boolean</returns>
+		public bool IsExpanded
+		{
+			get
+			{
+				object expandCollapsePatternObj = this.uiElement.GetCurrentPattern(UIA_PatternIds.UIA_ExpandCollapsePatternId);
+                IUIAutomationExpandCollapsePattern expandCollapsePattern = expandCollapsePatternObj as IUIAutomationExpandCollapsePattern;
+                
+                if (expandCollapsePattern == null)
+                {
+                    Engine.TraceInLogFile("TreeItem.IsExpanded property failed");
+                    throw new Exception("TreeItem.IsExpanded property failed");
+                }
+                
+                return expandCollapsePattern.CurrentExpandCollapseState == ExpandCollapseState.ExpandCollapseState_Expanded;
+			}
+		}
 
         /// <summary>
         /// Cycles through the check states (checked, unchecked, indeterminate).
@@ -294,5 +315,65 @@ namespace UIDeskAutomationLib
                 }
             }
         }
+		
+		private UIA_AutomationPropertyChangedEventHandler UIA_ExpandedEventHandler = null;
+		
+		/// <summary>
+        /// Delegate for Expanded event
+        /// </summary>
+		/// <param name="sender">The tree item that sent the event.</param>
+		/// <param name="isExpanded">true if expanded, false if not.</param>
+		public delegate void Expanded(UIDA_TreeItem sender, bool isExpanded);
+		internal Expanded ExpandedHandler = null;
+		
+		/// <summary>
+        /// Attaches/detaches a handler to expanded event
+        /// </summary>
+		public event Expanded ExpandedEvent
+		{
+			add
+			{
+				try
+				{
+					if (this.ExpandedHandler == null)
+					{
+						this.UIA_ExpandedEventHandler = new UIA_AutomationPropertyChangedEventHandler(this);
+			
+						Engine.uiAutomation.AddPropertyChangedEventHandler(base.uiElement, TreeScope.TreeScope_Element, 
+							null, this.UIA_ExpandedEventHandler, new int[] { UIA_PropertyIds.UIA_ExpandCollapseExpandCollapseStatePropertyId });
+					}
+					
+					this.ExpandedHandler += value;
+				}
+				catch {}
+			}
+			remove
+			{
+				try
+				{
+					this.ExpandedHandler -= value;
+				
+					if (this.ExpandedHandler == null)
+					{
+						if (this.UIA_ExpandedEventHandler == null)
+						{
+							return;
+						}
+						
+						System.Threading.Tasks.Task.Run(() => 
+						{
+							try
+							{
+								Engine.uiAutomation.RemovePropertyChangedEventHandler(base.uiElement, 
+									this.UIA_ExpandedEventHandler);
+								UIA_ExpandedEventHandler = null;
+							}
+							catch { }
+						}).Wait(5000);
+					}
+				}
+				catch {}
+			}
+		}
     }
 }

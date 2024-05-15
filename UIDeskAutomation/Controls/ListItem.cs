@@ -91,14 +91,23 @@ namespace UIDeskAutomationLib
                 IUIAutomationTreeWalker treeWalker = Engine.uiAutomation.ControlViewWalker;
                 IUIAutomationElement parent = treeWalker.GetParentElement(this.uiElement);
 
+				UIDA_ListItem[] listItems = null;
                 while (parent != null)
                 {
                     try
                     {
                         if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_ListControlTypeId)
                         {
+							UIDA_List parentList = new UIDA_List(parent);
+							listItems = parentList.Items;
                             break;
                         }
+						if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_ComboBoxControlTypeId)
+						{
+							UIDA_ComboBox parentComboBox = new UIDA_ComboBox(parent);
+							listItems = parentComboBox.Items;
+                            break;
+						}
                     }
                     catch
                     {
@@ -114,8 +123,8 @@ namespace UIDeskAutomationLib
                     throw new Exception("Error getting ListItem index");
                 }
 
-                UIDA_List parentList = new UIDA_List(parent);
-                UIDA_ListItem[] listItems = parentList.Items;
+                //UIDA_List parentList = new UIDA_List(parent);
+                //UIDA_ListItem[] listItems = parentList.Items;
 
                 int index = -1;
 
@@ -242,7 +251,6 @@ namespace UIDeskAutomationLib
                     if (className.ToString() == "SysListView32")
                     { 
                         // Win32 standard listview control
-
                         int index = this.Index;
 
                         IntPtr itemState = UnsafeNativeFunctions.SendMessage(
@@ -412,7 +420,9 @@ namespace UIDeskAutomationLib
                         {
                             break;
                         }
-                        this.SimulateDoubleClick();
+                        //this.SimulateDoubleClick();
+						this.BringIntoView();
+						this.DoubleClick();
                         tries--;
                     }
                 }
@@ -424,5 +434,16 @@ namespace UIDeskAutomationLib
                 }
             }
         }
+		
+		/// <summary>
+        /// Gets the text of the list item.
+        /// </summary>
+		public string Text
+		{
+			get
+			{
+				return this.GetText();
+			}
+		}
     }
 }
