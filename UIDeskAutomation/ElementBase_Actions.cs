@@ -124,12 +124,12 @@ namespace UIDeskAutomationLib
             try
             {
                 this.Focus();
+				Thread.Sleep(100);
                 System.Windows.Forms.SendKeys.SendWait(text);
             }
             catch (Exception ex)
             {
                 Engine.TraceInLogFile("SendKeys failed: " + ex.Message);
-
                 throw ex;
             }
         }
@@ -141,6 +141,7 @@ namespace UIDeskAutomationLib
         public void KeyDown(VirtualKeys key)
         {
             this.Focus();
+			Thread.Sleep(100);
             SendInputClass.KeyDown(key);
         }
         
@@ -151,6 +152,7 @@ namespace UIDeskAutomationLib
         public void KeyPress(VirtualKeys key)
         {
             this.Focus();
+			Thread.Sleep(100);
             SendInputClass.KeyDown(key);
             SendInputClass.KeyUp(key);
         }
@@ -162,6 +164,7 @@ namespace UIDeskAutomationLib
         public void KeysPress(VirtualKeys[] keys)
         {
             this.Focus();
+			Thread.Sleep(100);
             foreach (VirtualKeys key in keys)
             {
                 SendInputClass.KeyDown(key);
@@ -402,9 +405,6 @@ namespace UIDeskAutomationLib
         /// <param name="keys">keys pressed, 0 - None keys pressed, 1 - Ctrl key pressed, 2 - Shift key pressed, 3 - both Ctrl and Shift keys pressed</param>
         public void SimulateDoubleClick(int keys = 0)
         {
-            //this.SimulateClick(1, keys);
-            //this.SimulateClick(1, keys);
-
             this.SimulateClick(4, keys);
         }
 
@@ -579,14 +579,14 @@ namespace UIDeskAutomationLib
             int x = -1;
             int y = -1;
 
-            //tagPOINT point;
-            //if (this.uiElement.GetClickablePoint(out point) != 0)
-            //{
-            //    x = point.x;
-            //    y = point.y;
-            //}
-            //else
-            //{
+            /*tagPOINT point;
+            if (this.uiElement.GetClickablePoint(out point) != 0)
+            {
+                x = point.x;
+                y = point.y;
+            }
+            else
+            {*/
                 tagRECT boundingRectangle;
 
                 try
@@ -696,6 +696,40 @@ namespace UIDeskAutomationLib
 			if (Engine.GetInstance() != null)
 			{
 				Engine.GetInstance().MoveMouse(xScreen, yScreen, keys);
+			}
+		}
+		
+		/// <summary>
+        /// Moves the mouse pointer over the element in the center of it.
+		/// It can be used for drag and drop operations, see LeftMouseButtonDown(), MoveMouseOffset(), LeftMouseButtonUp() methods of Engine class.
+        /// </summary>
+        public void MoveMouseInCenter()
+		{
+			this.BringToForeground();
+			
+			// transform relative coordinates to screen coordinates
+
+            //get bounding rectangle
+            tagRECT? boundingRect = null;
+
+            try
+            {
+                boundingRect = this.uiElement.CurrentBoundingRectangle;
+            }
+            catch { }
+
+            if (boundingRect.HasValue == false)
+            {
+                Engine.TraceInLogFile("Cannot get element coordinates.");
+                throw new Exception("Cannot get element coordinates.");
+            }
+
+            int xCenter = (int)((boundingRect.Value.left + boundingRect.Value.right) / 2);
+            int yCenter = (int)((boundingRect.Value.top + boundingRect.Value.bottom) / 2);
+			
+			if (Engine.GetInstance() != null)
+			{
+				Engine.GetInstance().MoveMouse(xCenter, yCenter);
 			}
 		}
 		
@@ -825,6 +859,7 @@ namespace UIDeskAutomationLib
 		/// Use it when the element may be partially or fully hidden or overlapped by another window.
         /// </summary>
 		/// <param name="cropRect">Coordinates of the rectangle to crop relatively to this element. Don't specify it if you want to capture the whole element.</param>
+		/// <returns>System.Drawing.Bitmap that contains the captured element</returns>
         public Bitmap CaptureToBitmap(UIDA_Rect cropRect = null)
         {
             Bitmap bitmap = Helper.CaptureElement(uiElement);
@@ -843,6 +878,7 @@ namespace UIDeskAutomationLib
 		/// Use it when the element is entirely visible.
         /// </summary>
 		/// <param name="cropRect">Coordinates of the rectangle to crop relatively to this element. Don't specify it if you want to capture the whole element.</param>
+		/// <returns>System.Drawing.Bitmap that contains the captured element</returns>
         public Bitmap CaptureVisibleToBitmap(UIDA_Rect cropRect = null)
         {
 			this.BringToForeground();
@@ -880,6 +916,23 @@ namespace UIDeskAutomationLib
 			}
 			catch { }
 		}
+		
+		/// <summary>
+        /// Scrolls the element into viewable area.
+        /// </summary>
+		public void ScrollIntoView()
+		{
+			try
+			{
+				IUIAutomationScrollItemPattern scrollItemPattern = uiElement.GetCurrentPattern(UIA_PatternIds.UIA_ScrollItemPatternId) as IUIAutomationScrollItemPattern;
+				if (scrollItemPattern != null)
+				{
+					scrollItemPattern.ScrollIntoView();
+				}
+			}
+			catch {}
+		}
+		
         /*
         /// <summary>
         /// Compares the image of the current element against the image from the file and throws an exception if the images are different.

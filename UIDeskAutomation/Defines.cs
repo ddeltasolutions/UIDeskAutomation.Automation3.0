@@ -73,6 +73,28 @@ namespace UIDeskAutomationLib
 	internal abstract class UIA_PropertyIds
 	{
 		internal const int UIA_ControlTypePropertyId = 30003;
+		internal const int UIA_NamePropertyId = 30005;
 		internal const int UIA_ClassNamePropertyId = 30012;
+		internal const int UIA_ToggleToggleStatePropertyId = 30086;
+		internal const int UIA_SelectionItemIsSelectedPropertyId = 30079;
+		internal const int UIA_ValueValuePropertyId = 30045;
+		internal const int UIA_RangeValueValuePropertyId = 30047;
+		internal const int UIA_ExpandCollapseExpandCollapseStatePropertyId = 30070;
+		internal const int UIA_WindowWindowVisualStatePropertyId = 30075;
+		internal const int UIA_BoundingRectanglePropertyId = 30001;
+		internal const int UIA_AccessKeyPropertyId = 30007;
+		internal const int UIA_AcceleratorKeyPropertyId = 30006;
+	}
+	
+	internal abstract class UIA_EventIds
+	{
+		internal const int UIA_Invoke_InvokedEventId = 20009;
+		internal const int UIA_Window_WindowClosedEventId = 20017;
+		internal const int UIA_Text_TextChangedEventId = 20015;
+		internal const int UIA_Text_TextSelectionChangedEventId = 20014;
+		internal const int UIA_SelectionItem_ElementSelectedEventId = 20012;
+		internal const int UIA_SelectionItem_ElementAddedToSelectionEventId = 20010;
+		internal const int UIA_SelectionItem_ElementRemovedFromSelectionEventId = 20011;
+		internal const int UIA_MenuOpenedEventId = 20003;
 	}
 }

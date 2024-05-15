@@ -12,7 +12,7 @@ namespace UIDeskAutomationLib
     /// </summary>
     public class UIDA_Window: ElementBase
     {
-        private IntPtr hWnd = IntPtr.Zero;
+        protected IntPtr hWnd = IntPtr.Zero;
 
         /// <summary>
         /// Creates a UIDA_Window using a window handle
@@ -46,7 +46,7 @@ namespace UIDeskAutomationLib
         /// <summary>
         /// Gets a window description
         /// </summary>
-        /// <returns></returns>
+        /// <returns>the description</returns>
         public string WindowDescription()
         {
             if (this.hWnd == IntPtr.Zero)
@@ -134,7 +134,7 @@ namespace UIDeskAutomationLib
                 return;
             }
 
-            UnsafeNativeFunctions.SendMessage(hWnd, WindowMessages.WM_CLOSE, 
+            /*UnsafeNativeFunctions.SendMessage(hWnd, WindowMessages.WM_CLOSE, 
                 IntPtr.Zero, IntPtr.Zero);
 
             int timeOut = Engine.GetInstance().Timeout;
@@ -153,7 +153,17 @@ namespace UIDeskAutomationLib
             if (timeOut <= 0)
             {
                 Engine.TraceInLogFile("Window.Close() method - window could not be closed, maybe a confirmation is required");
-            }
+            }*/
+			
+			if (this.IsMinimized == true)
+			{
+				this.Restore();
+			}
+			
+			this.BringToForeground();
+			this.KeyDown(VirtualKeys.Alt);
+			this.KeyPress(VirtualKeys.F4);
+			this.KeyUp(VirtualKeys.Alt);
         }
 
         /// <summary>
@@ -203,7 +213,6 @@ namespace UIDeskAutomationLib
             if (hWnd == IntPtr.Zero)
             {
                 Engine.TraceInLogFile("BringToForeground method - null window handle");
-
                 return;
             }
 
@@ -408,8 +417,291 @@ namespace UIDeskAutomationLib
                 return sBuilderWindowText.ToString();
             }
         }
+		
+		/// <summary>
+        /// Gets the window handle
+        /// </summary>
+		public IntPtr HWND
+		{
+			get
+			{
+				return this.hWnd;
+			}
+		}
+		
+		private UIA_AutomationEventHandler UIA_WindowClosedEventHandler = null;
+		internal Action OnWindowClosed = null;
+		
+		/// <summary>
+        /// Attaches/detaches a handler to window closed event
+        /// </summary>
+		public event Action WindowClosedEvent
+		{
+			add
+			{
+				try
+				{
+					if (this.OnWindowClosed == null)
+					{
+						this.UIA_WindowClosedEventHandler = new UIA_AutomationEventHandler(this);
+		
+						Engine.uiAutomation.AddAutomationEventHandler(UIA_EventIds.UIA_Window_WindowClosedEventId, 
+							base.uiElement, TreeScope.TreeScope_Element, null, this.UIA_WindowClosedEventHandler);
+					}
+					
+					this.OnWindowClosed += value;
+				}
+				catch {}
+			}
+			remove
+			{
+				try
+				{
+					this.OnWindowClosed -= value;
+				
+					if (this.OnWindowClosed == null)
+					{
+						if (this.UIA_WindowClosedEventHandler == null)
+						{
+							return;
+						}
+						
+						System.Threading.Tasks.Task.Run(() => 
+						{
+							try
+							{
+								Engine.uiAutomation.RemoveAutomationEventHandler(UIA_EventIds.UIA_Window_WindowClosedEventId, 
+									base.uiElement, this.UIA_WindowClosedEventHandler);
+								UIA_WindowClosedEventHandler = null;
+							}
+							catch { }
+						}).Wait(5000);
+					}
+				}
+				catch {}
+			}
+		}
+		
+		/*private UIA_AutomationPropertyChangedEventHandler UIA_MinimizedEventHandler = null;
+		public delegate void Minimized(UIDA_Window sender);
+		internal Minimized MinimizedHandler = null;
+		
+		/// <summary>
+        /// Attaches/detaches a handler to minimized event
+        /// </summary>
+		public event Minimized MinimizedEvent
+		{
+			add
+			{
+				try
+				{
+					if (this.MinimizedHandler == null)
+					{
+						this.UIA_MinimizedEventHandler = new UIA_AutomationPropertyChangedEventHandler(this);
+			
+						Engine.uiAutomation.AddPropertyChangedEventHandler(base.uiElement, TreeScope.TreeScope_Element, 
+							null, this.UIA_MinimizedEventHandler, new int[] { UIA_PropertyIds.UIA_WindowWindowVisualStatePropertyId });
+					}
+					
+					this.MinimizedHandler += value;
+				}
+				catch {}
+			}
+			remove
+			{
+				try
+				{
+					this.MinimizedHandler -= value;
+				
+					if (this.MinimizedHandler == null)
+					{
+						if (this.UIA_MinimizedEventHandler == null)
+						{
+							return;
+						}
+						
+						System.Threading.Tasks.Task.Run(() => 
+						{
+							try
+							{
+								Engine.uiAutomation.RemovePropertyChangedEventHandler(base.uiElement, 
+									this.UIA_MinimizedEventHandler);
+								UIA_MinimizedEventHandler = null;
+							}
+							catch { }
+						}).Wait(5000);
+					}
+				}
+				catch {}
+			}
+		}
+		
+		private UIA_AutomationPropertyChangedEventHandler UIA_MaximizedEventHandler = null;
+		public delegate void Maximized(UIDA_Window sender);
+		internal Maximized MaximizedHandler = null;
+		
+		/// <summary>
+        /// Attaches/detaches a handler to maximized event
+        /// </summary>
+		public event Maximized MaximizedEvent
+		{
+			add
+			{
+				try
+				{
+					if (this.MaximizedHandler == null)
+					{
+						this.UIA_MaximizedEventHandler = new UIA_AutomationPropertyChangedEventHandler(this);
+			
+						Engine.uiAutomation.AddPropertyChangedEventHandler(base.uiElement, TreeScope.TreeScope_Element, 
+							null, this.UIA_MaximizedEventHandler, new int[] { UIA_PropertyIds.UIA_WindowWindowVisualStatePropertyId });
+					}
+					
+					this.MaximizedHandler += value;
+				}
+				catch {}
+			}
+			remove
+			{
+				try
+				{
+					this.MaximizedHandler -= value;
+				
+					if (this.MaximizedHandler == null)
+					{
+						if (this.UIA_MaximizedEventHandler == null)
+						{
+							return;
+						}
+						
+						System.Threading.Tasks.Task.Run(() => 
+						{
+							try
+							{
+								Engine.uiAutomation.RemovePropertyChangedEventHandler(base.uiElement, 
+									this.UIA_MaximizedEventHandler);
+								UIA_MaximizedEventHandler = null;
+							}
+							catch { }
+						}).Wait(5000);
+					}
+				}
+				catch {}
+			}
+		}
+		
+		private UIA_AutomationPropertyChangedEventHandler UIA_RestoredEventHandler = null;
+		public delegate void Restored(UIDA_Window sender);
+		internal Restored RestoredHandler = null;
+		
+		/// <summary>
+        /// Attaches/detaches a handler to restored event
+        /// </summary>
+		public event Restored RestoredEvent
+		{
+			add
+			{
+				try
+				{
+					if (this.RestoredHandler == null)
+					{
+						this.UIA_RestoredEventHandler = new UIA_AutomationPropertyChangedEventHandler(this);
+			
+						Engine.uiAutomation.AddPropertyChangedEventHandler(base.uiElement, TreeScope.TreeScope_Element, 
+							null, this.UIA_RestoredEventHandler, new int[] { UIA_PropertyIds.UIA_WindowWindowVisualStatePropertyId });
+					}
+					
+					this.RestoredHandler += value;
+				}
+				catch {}
+			}
+			remove
+			{
+				try
+				{
+					this.RestoredHandler -= value;
+				
+					if (this.RestoredHandler == null)
+					{
+						if (this.UIA_RestoredEventHandler == null)
+						{
+							return;
+						}
+						
+						System.Threading.Tasks.Task.Run(() => 
+						{
+							try
+							{
+								Engine.uiAutomation.RemovePropertyChangedEventHandler(base.uiElement, 
+									this.UIA_RestoredEventHandler);
+								UIA_RestoredEventHandler = null;
+							}
+							catch { }
+						}).Wait(5000);
+					}
+				}
+				catch {}
+			}
+		}*/
+		
+		/*private UIA_AutomationPropertyChangedEventHandler UIA_WindowMovedEventHandler = null;
+		public delegate void WindowMoved(UIDA_Window sender, UIDA_Rect newLocation);
+		internal WindowMoved WindowMovedHandler = null;
+		
+		/// <summary>
+        /// Attaches/detaches a handler to window moved event
+        /// </summary>
+		public event WindowMoved WindowMovedEvent
+		{
+			add
+			{
+				try
+				{
+					if (this.WindowMovedHandler == null)
+					{
+						this.UIA_WindowMovedEventHandler = new UIA_AutomationPropertyChangedEventHandler(this);
+			
+						Engine.uiAutomation.AddPropertyChangedEventHandler(base.uiElement, TreeScope.TreeScope_Element, 
+							null, this.UIA_WindowMovedEventHandler, new int[] { UIA_PropertyIds.UIA_BoundingRectanglePropertyId });
+					}
+					
+					this.WindowMovedHandler += value;
+				}
+				catch {}
+			}
+			remove
+			{
+				try
+				{
+					this.WindowMovedHandler -= value;
+				
+					if (this.WindowMovedHandler == null)
+					{
+						if (this.UIA_WindowMovedEventHandler == null)
+						{
+							return;
+						}
+						
+						System.Threading.Tasks.Task.Run(() => 
+						{
+							try
+							{
+								Engine.uiAutomation.RemovePropertyChangedEventHandler(base.uiElement, 
+									this.UIA_WindowMovedEventHandler);
+								UIA_WindowMovedEventHandler = null;
+							}
+							catch { }
+						}).Wait(5000);
+					}
+				}
+				catch {}
+			}
+		}*/
     }
 	
+	/// <summary>
+    /// Class that defines a 2D point
+    /// </summary>
 	public class UIDA_Point
 	{
 		public int X { get; set; }

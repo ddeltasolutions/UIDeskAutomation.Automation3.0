@@ -140,9 +140,7 @@ namespace UIDeskAutomationLib
                 dummyForm.Visible = false;
             }
             catch (Exception ex)
-            {
-                return;
-            }
+            { }
         }
 
         /// <summary>
@@ -314,6 +312,197 @@ namespace UIDeskAutomationLib
 				catch { }
 
 				return -1;
+			}
+		}
+		
+		/// <summary>
+        /// Gets the parent of the element. You need to cast the parent to the proper type. For example, if the current 
+		/// element is a list item you can write: "UIDA_List list = listItem.Parent as UIDA_List;"
+        /// </summary>
+		public ElementBase Parent
+		{
+			get
+			{
+				IUIAutomationTreeWalker tw = Engine.uiAutomation.ControlViewWalker;
+				IUIAutomationElement parent = tw.GetParentElement(this.uiElement);
+				
+				if (parent == null)
+				{
+					return null;
+				}
+				
+				if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_ButtonControlTypeId)
+				{
+					return new UIDA_Button(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_CalendarControlTypeId)
+				{
+					return new UIDA_Calendar(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_CheckBoxControlTypeId)
+				{
+					return new UIDA_CheckBox(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_ComboBoxControlTypeId)
+				{
+					return new UIDA_ComboBox(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_HyperlinkControlTypeId)
+				{
+					return new UIDA_HyperLink(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_ImageControlTypeId)
+				{
+					return new UIDA_Image(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_ListItemControlTypeId)
+				{
+					return new UIDA_ListItem(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_ListControlTypeId)
+				{
+					return new UIDA_List(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_MenuControlTypeId)
+				{
+					return new UIDA_TopLevelMenu(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_MenuBarControlTypeId)
+				{
+					return new UIDA_MenuBar(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_MenuItemControlTypeId)
+				{
+					return new UIDA_MenuItem(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_ProgressBarControlTypeId)
+				{
+					return new UIDA_ProgressBar(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_RadioButtonControlTypeId)
+				{
+					return new UIDA_RadioButton(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_ScrollBarControlTypeId)
+				{
+					return new UIDA_ScrollBar(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_SliderControlTypeId)
+				{
+					return new UIDA_Slider(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_SpinnerControlTypeId)
+				{
+					return new UIDA_Spinner(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_StatusBarControlTypeId)
+				{
+					return new UIDA_StatusBar(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_TabControlTypeId)
+				{
+					return new UIDA_TabCtrl(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_TabItemControlTypeId)
+				{
+					return new UIDA_TabItem(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_TextControlTypeId)
+				{
+					return new UIDA_Label(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_ToolBarControlTypeId)
+				{
+					return new UIDA_ToolBar(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_ToolTipControlTypeId)
+				{
+					return new UIDA_ToolTip(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_TreeControlTypeId)
+				{
+					return new UIDA_Tree(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_TreeItemControlTypeId)
+				{
+					return new UIDA_TreeItem(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_CustomControlTypeId)
+				{
+					return new UIDA_Custom(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_GroupControlTypeId)
+				{
+					return new UIDA_Group(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_ThumbControlTypeId)
+				{
+					return new UIDA_Thumb(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_DataGridControlTypeId)
+				{
+					return new UIDA_DataGrid(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_DataItemControlTypeId)
+				{
+					return new UIDA_DataItem(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_DocumentControlTypeId)
+				{
+					return new UIDA_Document(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_SplitButtonControlTypeId)
+				{
+					return new UIDA_SplitButton(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_WindowControlTypeId)
+				{
+					return new UIDA_Window(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_PaneControlTypeId)
+				{
+					return new UIDA_Pane(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_HeaderControlTypeId)
+				{
+					return new UIDA_Header(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_HeaderItemControlTypeId)
+				{
+					return new UIDA_HeaderItem(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_TableControlTypeId)
+				{
+					return new UIDA_Table(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_TitleBarControlTypeId)
+				{
+					return new UIDA_TitleBar(parent);
+				}
+				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_SeparatorControlTypeId)
+				{
+					return new UIDA_Separator(parent);
+				}
+				
+				return null;
+			}
+		}
+		
+		/// <summary>
+        /// Gets a boolean to determine if the UI element is enabled.
+        /// </summary>
+		public bool IsEnabled
+		{
+			get
+			{
+				try
+				{
+					return (this.uiElement.CurrentIsEnabled != 0);
+				}
+				catch 
+				{
+					return true;
+				}
 			}
 		}
     }

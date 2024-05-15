@@ -601,7 +601,7 @@ namespace UIDeskAutomationLib
                     {
                         // Alt up
                         UnsafeNativeFunctions.PostMessage(hwnd, WindowMessages.WM_KEYUP,
-                            new IntPtr((int)VirtualKeys.Menu), IntPtr.Zero);
+                            new IntPtr((int)VirtualKeys.Alt), IntPtr.Zero);
                         bAltIsPressed = false;
                     }
 
@@ -614,7 +614,7 @@ namespace UIDeskAutomationLib
                 {
                     // Alt key down
                     UnsafeNativeFunctions.PostMessage(hwnd, WindowMessages.WM_KEYDOWN,
-                        new IntPtr((int)VirtualKeys.Menu), IntPtr.Zero);
+                        new IntPtr((int)VirtualKeys.Alt), IntPtr.Zero);
                     bAltIsPressed = true;
                 }
                 else if (key == "+")
@@ -660,7 +660,7 @@ namespace UIDeskAutomationLib
                 else if (key == "{ENTER}")
                 {
                     UnsafeNativeFunctions.PostMessage(hwnd, WindowMessages.WM_KEYDOWN,
-                        new IntPtr((int)VirtualKeys.Return), IntPtr.Zero);
+                        new IntPtr((int)VirtualKeys.Enter), IntPtr.Zero);
                 }
                 else if (key == "{ESC}")
                 {
@@ -690,17 +690,17 @@ namespace UIDeskAutomationLib
                 else if (key == "{PGDN}") // page down
                 {
                     UnsafeNativeFunctions.PostMessage(hwnd, WindowMessages.WM_KEYDOWN,
-                        new IntPtr((int)VirtualKeys.Next), IntPtr.Zero);
+                        new IntPtr((int)VirtualKeys.PageDown), IntPtr.Zero);
                 }
                 else if (key == "{PGUP}") // page up
                 {
                     UnsafeNativeFunctions.PostMessage(hwnd, WindowMessages.WM_KEYDOWN,
-                        new IntPtr((int)VirtualKeys.Prior), IntPtr.Zero);
+                        new IntPtr((int)VirtualKeys.PageUp), IntPtr.Zero);
                 }
                 else if (key == "{PRTSC}") // print screen
                 {
                     UnsafeNativeFunctions.PostMessage(hwnd, WindowMessages.WM_KEYDOWN,
-                        new IntPtr((int)VirtualKeys.Snapshot), IntPtr.Zero);
+                        new IntPtr((int)VirtualKeys.PrintScreen), IntPtr.Zero);
                 }
                 else if (key == "{RIGHT}")
                 {
@@ -825,7 +825,7 @@ namespace UIDeskAutomationLib
                     {
                         // Enter
                         UnsafeNativeFunctions.PostMessage(hwnd, WindowMessages.WM_KEYDOWN,
-                            new IntPtr((int)VirtualKeys.Return), IntPtr.Zero);
+                            new IntPtr((int)VirtualKeys.Enter), IntPtr.Zero);
                     }
                     else
                     {
@@ -856,7 +856,7 @@ namespace UIDeskAutomationLib
                     {
                         // Alt up
                         UnsafeNativeFunctions.PostMessage(hwnd, WindowMessages.WM_KEYUP,
-                            new IntPtr((int)VirtualKeys.Menu), IntPtr.Zero);
+                            new IntPtr((int)VirtualKeys.Alt), IntPtr.Zero);
                         bAltIsPressed = false;
                     }
                 }
@@ -1291,13 +1291,10 @@ namespace UIDeskAutomationLib
         public WindowWithInfo(IntPtr windowHandle)
         {
             this.hwnd = windowHandle;
-
             uint processId = 0;
-
             UnsafeNativeFunctions.GetWindowThreadProcessId(this.hwnd, out processId);
-
+			
             Process process = Process.GetProcessById(Convert.ToInt32(processId));
-
             this.creationDate = process.StartTime;
         }
     }

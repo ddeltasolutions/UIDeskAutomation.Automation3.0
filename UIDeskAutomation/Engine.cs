@@ -17,10 +17,16 @@ using UIAutomationClient;
 
 namespace UIDeskAutomationLib
 {
+	/// <summary>
+    /// Namespace for all classes.
+    /// </summary>
+	public static class NamespaceDoc
+	{}
+
     /// <summary>
     /// Main entry point class. You need only one instance of this class. 
     /// Information on how to use this library can be found at 
-    /// <a href="https://ddeltasolutions.000webhostapp.com/uideskautomation_unmanaged.html">https://ddeltasolutions.000webhostapp.com/uideskautomation_unmanaged.html</a>.
+    /// <a href="http://automationspy.freecluster.eu/uideskautomation_unmanaged.html">http://automationspy.freecluster.eu/uideskautomation_unmanaged.html</a>.
     /// </summary>
     public class Engine
     {
@@ -40,6 +46,7 @@ namespace UIDeskAutomationLib
         }
         
         internal static CUIAutomation uiAutomation = new CUIAutomation();
+		//public static bool IsCancelled = false;
 
         /// <summary>
         /// Gets/Sets Timeout period (in milliseconds)
@@ -122,7 +129,6 @@ namespace UIDeskAutomationLib
             try
             {
                 string sLineToWrite = DateTime.Now.ToString("G") + ": " + sMessage + Environment.NewLine;
-
                 File.AppendAllText(Engine.logFileName, sLineToWrite);
             }
             catch { }
@@ -172,7 +178,7 @@ namespace UIDeskAutomationLib
 
             Errors error = Errors.None;
 
-            while (nWaitMs > 0)
+			while (true)
             {
                 error = Helper.GetWindowAt(IntPtr.Zero, className, windowText, 
                     index, caseSensitive, out hwnd);
@@ -181,9 +187,19 @@ namespace UIDeskAutomationLib
                 {
                     break; //found!
                 }
+				
+				/*if (Engine.IsCancelled == true)
+				{
+					Engine.IsCancelled = false;
+					break;
+				}*/
 
-                nWaitMs -= 100; //wait 100 milliseconds
-                Thread.Sleep(100);
+                nWaitMs -= ElementBase.waitPeriod; //wait 100 milliseconds
+				if (nWaitMs <= 0)
+				{
+					break;
+				}
+                Thread.Sleep(ElementBase.waitPeriod);
             }
 
             if (hwnd == IntPtr.Zero)
@@ -254,7 +270,7 @@ namespace UIDeskAutomationLib
                 index = 1;
             }
 
-            while (nWaitMs > 0)
+			while (true)
             {
                 windowHandle = Helper.GetTopLevelByProcName(processName, 
                     className, windowText, index, caseSensitive);
@@ -263,9 +279,19 @@ namespace UIDeskAutomationLib
                 {
                     break; //found!
                 }
+				
+				/*if (Engine.IsCancelled == true)
+				{
+					Engine.IsCancelled = false;
+					break;
+				}*/
 
-                nWaitMs -= 100; //wait 100 milliseconds
-                Thread.Sleep(100);
+                nWaitMs -= ElementBase.waitPeriod; //wait 100 milliseconds
+				if (nWaitMs <= 0)
+				{
+					break;
+				}
+                Thread.Sleep(ElementBase.waitPeriod);
             }
 
             if (windowHandle == IntPtr.Zero)
@@ -345,7 +371,7 @@ namespace UIDeskAutomationLib
             int nWaitMs = Engine.wait;
             IntPtr windowHandle = IntPtr.Zero;
 
-            while (nWaitMs > 0)
+			while (true)
             {
                 windowHandle = Helper.GetTopLevelByProcId(processId, className, 
                     windowText, caseSensitive);
@@ -354,9 +380,19 @@ namespace UIDeskAutomationLib
                 {
                     break; //found!
                 }
+				
+				/*if (Engine.IsCancelled == true)
+				{
+					Engine.IsCancelled = false;
+					break;
+				}*/
 
-                nWaitMs -= 100; //wait 100 milliseconds
-                Thread.Sleep(100);
+                nWaitMs -= ElementBase.waitPeriod; //wait 100 milliseconds
+				if (nWaitMs <= 0)
+				{
+					break;
+				}
+                Thread.Sleep(ElementBase.waitPeriod);
             }
 
             if (windowHandle == IntPtr.Zero)
@@ -570,6 +606,43 @@ namespace UIDeskAutomationLib
         {
             SendInputClass.DoubleClick(x, y, keys);
         }
+		
+		/// <summary>
+        /// Presses the left mouse button, without releasing it. 
+		/// It can be used in combination with MoveMouse and LeftMouseButtonUp for drag and drop operations.
+        /// </summary>
+        public void LeftMouseButtonDown()
+        {
+            SendInputClass.LeftMouseButtonDown();
+			Sleep(100);
+        }
+		
+		/// <summary>
+        /// Releases the left mouse button
+        /// </summary>
+        public void LeftMouseButtonUp()
+        {
+            SendInputClass.LeftMouseButtonUp();
+			Sleep(100);
+        }
+		
+		/// <summary>
+        /// Presses the right mouse button, without releasing it
+        /// </summary>
+        public void RightMouseButtonDown()
+        {
+            SendInputClass.RightMouseButtonDown();
+			Sleep(100);
+        }
+		
+		/// <summary>
+        /// Releases the right mouse button
+        /// </summary>
+        public void RightMouseButtonUp()
+        {
+            SendInputClass.RightMouseButtonUp();
+			Sleep(100);
+        }
 
         // simulate click functions
 
@@ -632,6 +705,20 @@ namespace UIDeskAutomationLib
         public void MoveMouse(int x, int y, int keys = 0)
         {
             SendInputClass.MoveMousePointer(x, y, keys);
+        }
+		
+		/// <summary>
+        /// Moves mouse pointer relatively to the current mouse position
+        /// </summary>
+        /// <param name="dx">dx - horizontal offset</param>
+        /// <param name="dy">dy - vertical offset</param>
+        /// <param name="keys">keys pressed, 0 - None, 1 - Control pressed, 
+        /// 2 - Shift pressed, 3 - Both Control and Shift pressed</param>
+        public void MoveMouseOffset(int dx, int dy, int keys = 0)
+        {
+			int x = System.Windows.Forms.Cursor.Position.X;
+			int y = System.Windows.Forms.Cursor.Position.Y;
+            SendInputClass.MoveMousePointer(x + dx, y + dy, keys);
         }
 		
 		/// <summary>
@@ -942,6 +1029,24 @@ namespace UIDeskAutomationLib
 			{
 				Process proc = Process.Start(processName);
 				proc.WaitForInputIdle();
+				
+				for (int i = 0; i < 10; i++)
+				{
+					Thread.Sleep(100);
+				
+					try
+					{
+						if (proc.MainWindowHandle != IntPtr.Zero)
+						{
+							break;
+						}
+					}
+					catch
+					{
+						break;
+					}
+				}
+				
 				return proc.Id;
 			}
 			catch (Exception ex)
@@ -1014,6 +1119,7 @@ namespace UIDeskAutomationLib
 		/// You can capture a part of the screen using a crop rectangle.
         /// </summary>
 		/// <param name="cropRect">Coordinates of the rectangle to crop. Don't specify it if you want to capture the entire screen.</param>
+		/// <returns>System.Drawing.Bitmap that contains the screen or the captured portion of the screen</returns>
         public Bitmap CaptureScreenToBitmap(UIDA_Rect cropRect = null)
         {
             return Helper.CaptureScreen(cropRect);
@@ -1046,6 +1152,54 @@ namespace UIDeskAutomationLib
                 bitmap.Dispose();
             }
         }
+		
+		/// <summary>
+        /// Shows the desktop, minimizes all windows. If you call this function again it will not restore your desktop.
+        /// </summary>
+		public void ShowDesktop()
+		{
+			IUIAutomationElement desktopPane = uiAutomation.GetRootElement();
+			TreeScope scope = TreeScope.TreeScope_Children;
+			IUIAutomationCondition trueCondition = Engine.uiAutomation.CreateTrueCondition();
+			
+			IUIAutomationElementArray collection = desktopPane.FindAll(scope, trueCondition);
+			
+			for (int i = 0; i < collection.Length; i++)
+			{
+				IUIAutomationElement el = collection.GetElement(i);
+				UIDA_Window window = new UIDA_Window(el);
+				window.Minimize();
+			}
+			
+			Thread.Sleep(100);
+		}
+		
+		/*public void CancelSearch()
+		{
+			Engine.IsCancelled = true;
+		}*/
+		
+		/// <summary>
+        /// Opens a new Google Chrome browser window.
+        /// </summary>
+		/// <returns>A new Google Chrome browser automation object</returns>
+		public ChromeBrowser NewChromeBrowser()
+		{
+			ChromeBrowser browser = new ChromeBrowser();
+			browser.StartBrowser();
+			return browser;
+		}
+		
+		/// <summary>
+        /// Opens a new Microsoft Edge browser window.
+        /// </summary>
+		/// <returns>A new Microsoft Edge browser automation object</returns>
+		public EdgeBrowser NewEdgeBrowser()
+		{
+			EdgeBrowser browser = new EdgeBrowser();
+			browser.StartBrowser();
+			return browser;
+		}
     }
 
     internal enum Errors
