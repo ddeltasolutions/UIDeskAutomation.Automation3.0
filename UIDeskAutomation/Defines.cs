@@ -84,7 +84,17 @@ namespace UIDeskAutomationLib
 		internal const int UIA_BoundingRectanglePropertyId = 30001;
 		internal const int UIA_AccessKeyPropertyId = 30007;
 		internal const int UIA_AcceleratorKeyPropertyId = 30006;
-	}
+        internal const int UIA_AriaRolePropertyId = 30101;
+        internal const int UIA_AutomationIdPropertyId = 30011;
+        internal const int UIA_FrameworkIdPropertyId = 30024;
+        internal const int UIA_FullDescriptionPropertyId = 30159;
+        internal const int UIA_HelpTextPropertyId = 30013;
+        internal const int UIA_ItemStatusPropertyId = 30026;
+        internal const int UIA_ItemTypePropertyId = 300021;
+        internal const int UIA_LocalizedLandmarkTypePropertyId = 30158;
+        internal const int UIA_ProcessIdPropertyId = 30002;
+        internal const int UIA_ProviderDescriptionPropertyId = 30107;
+    }
 	
 	internal abstract class UIA_EventIds
 	{
