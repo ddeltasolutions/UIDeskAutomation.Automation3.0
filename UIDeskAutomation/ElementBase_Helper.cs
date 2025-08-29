@@ -253,6 +253,7 @@ namespace UIDeskAutomationLib
 				}
                 Thread.Sleep(ElementBase.waitPeriod);
             }
+            //Engine.TraceInLogFile("elements found: " + foundElements.Count);
 
             if ((foundElements == null) || (foundElements.Count == 0))
             {

@@ -1291,10 +1291,13 @@ namespace UIDeskAutomationLib
         public WindowWithInfo(IntPtr windowHandle)
         {
             this.hwnd = windowHandle;
+
             uint processId = 0;
+
             UnsafeNativeFunctions.GetWindowThreadProcessId(this.hwnd, out processId);
-			
+
             Process process = Process.GetProcessById(Convert.ToInt32(processId));
+
             this.creationDate = process.StartTime;
         }
     }

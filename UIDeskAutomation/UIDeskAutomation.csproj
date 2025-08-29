@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UIDeskAutomationLib</RootNamespace>
     <AssemblyName>UIDeskAutomation</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <NoWin32Manifest>False</NoWin32Manifest>
@@ -25,7 +25,6 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\UIDeskAutomation.xml</DocumentationFile>
     <PlatformTarget>x86</PlatformTarget>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,7 +34,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\UIDeskAutomation.xml</DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -48,6 +46,10 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationClient1">
+        <EmbedInteropTypes>True</EmbedInteropTypes>
+        <HintPath>Lib\Interop.UIAutomationClient.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\Button.cs" />
@@ -56,14 +58,14 @@
     <Compile Include="Controls\ComboBox.cs" />
     <Compile Include="Controls\Custom.cs" />
     <Compile Include="Controls\DataGrid.cs" />
-    <Compile Include="Controls\DataItem.cs" />
+	<Compile Include="Controls\DataItem.cs" />
     <Compile Include="Controls\DatePicker.cs" />
     <Compile Include="Controls\Document.cs" />
     <Compile Include="Controls\Edit.cs" />
     <Compile Include="Controls\Generic.cs" />
     <Compile Include="Controls\Group.cs" />
-    <Compile Include="Controls\Header.cs" />
-    <Compile Include="Controls\HeaderItem.cs" />
+	<Compile Include="Controls\Header.cs" />
+	<Compile Include="Controls\HeaderItem.cs" />
     <Compile Include="Controls\Separator.cs" />
     <Compile Include="Controls\SplitButton.cs" />
     <Compile Include="Controls\StatusBar.cs" />
@@ -73,7 +75,7 @@
     <Compile Include="Controls\ToolTip.cs" />
     <Compile Include="ElementBase_Actions.cs" />
     <Compile Include="ElementBase_Search.cs" />
-    <Compile Include="ElementBase_Helper.cs" />
+	<Compile Include="ElementBase_Helper.cs" />
     <Compile Include="FrmDummy.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -84,7 +86,7 @@
     <Compile Include="Helper.cs" />
     <Compile Include="Controls\HyperLink.cs" />
     <Compile Include="Controls\Image.cs" />
-    <Compile Include="Controls\Label.cs" />
+    <Compile Include="Controls\Text.cs" />
     <Compile Include="Controls\List.cs" />
     <Compile Include="Controls\ListItem.cs" />
     <Compile Include="Controls\MenuBar.cs" />
@@ -98,35 +100,24 @@
     <Compile Include="Controls\TabCtrl.cs" />
     <Compile Include="Controls\TabItem.cs" />
     <Compile Include="Controls\TitleBar.cs" />
-    <Compile Include="Controls\TopLevelMenu.cs" />
+    <Compile Include="Controls\Menu.cs" />
     <Compile Include="Controls\Tree.cs" />
     <Compile Include="Controls\TreeItem.cs" />
-    <Compile Include="UIDA_Properties.cs" />
+     <Compile Include="UIDA_Properties.cs" />
     <Compile Include="UnsafeNativeFunctions.cs" />
     <Compile Include="ElementBase.cs" />
     <Compile Include="Engine.cs" />
-    <Compile Include="ChromeBrowser.cs" />
-    <Compile Include="EdgeBrowser.cs" />
+	<Compile Include="ChromeBrowser.cs" />
+	<Compile Include="EdgeBrowser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Window.cs" />
-    <Compile Include="Defines.cs" />
-    <Compile Include="Events.cs" />
+	<Compile Include="Defines.cs" />
+	<Compile Include="Events.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="FrmDummy.resx">
       <DependentUpon>FrmDummy.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="UIAutomationClient">
-      <Guid>{944DE083-8FB8-45CF-BCB7-C477ACB2F897}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

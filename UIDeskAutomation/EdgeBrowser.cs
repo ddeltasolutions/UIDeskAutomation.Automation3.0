@@ -191,6 +191,7 @@ namespace UIDeskAutomationLib
 			}
 			
 			UIDA_Button backButton = buttons[0];
+			//backButton.Highlight();
 			backButton.Invoke();
 		}
 		

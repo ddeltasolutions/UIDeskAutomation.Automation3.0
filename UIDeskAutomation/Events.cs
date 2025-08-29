@@ -62,10 +62,17 @@ namespace UIDeskAutomationLib
 	
 		public void HandleAutomationEvent(IUIAutomationElement sender, int eventId)
 		{
+			//System.Windows.Forms.MessageBox.Show("HandleAutomationEvent");
+			//File.AppendAllText("Traces.txt", "HandleAutomationEvent" + Environment.NewLine);
+		
 			if (this.window != null)
 			{
 				if (eventId == UIA_EventIds.UIA_Window_WindowClosedEventId && this.window.OnWindowClosed != null)
 				{
+					/*if (this.window.InnerElement.CurrentFrameworkId == "WinForm" && sender == null)
+					{
+						return;
+					}*/
 					DateTime now = DateTime.Now;
 					if (lastTime != null && (now - lastTime.Value) < TimeSpan.FromMilliseconds(100))
 					{
@@ -74,6 +81,7 @@ namespace UIDeskAutomationLib
 					}
 					lastTime = now;
 					this.window.OnWindowClosed();
+					//System.Windows.Forms.MessageBox.Show("Handler Invoked");
 				}
 			}
 			else if (this.edit != null)
@@ -145,6 +153,7 @@ namespace UIDeskAutomationLib
 					bool isSelected = true;
 					try
 					{
+						//isSelected = (new UIDA_RadioButton(sender)).IsSelected;
 						isSelected = this.radioButton.IsSelected;
 					}
 					catch { }
@@ -154,6 +163,7 @@ namespace UIDeskAutomationLib
 			}
 			else if (this.comboBox != null)
 			{
+				//System.Windows.Forms.MessageBox.Show("ControlTypeId = " + sender.CurrentControlType + ", eventId = " + eventId);
 				if (sender.CurrentControlType == UIA_ControlTypeIds.UIA_ListItemControlTypeId && 
 					eventId == UIA_EventIds.UIA_SelectionItem_ElementSelectedEventId && 
 					this.comboBox.SelectionChangedHandle != null)

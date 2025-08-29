@@ -361,14 +361,14 @@ namespace UIDeskAutomationLib
         }
 
         /// <summary>
-        /// Searches for a top-level menu among the children of the element or its descendants
+        /// Searches for a menu among the children of the element or its descendants
         /// </summary>
         /// <param name="name">menu name, wildcards can be used</param>
         /// <param name="index">menu index, starts with 1</param>
         /// <param name="searchDescendants">search descendants, default false</param>
         /// <param name="caseSensitive">search name with case sensitive criteria</param>
-        /// <returns>UIDA_TopLevelMenu, null if not found</returns>
-        public UIDA_TopLevelMenu MenuAt(string name, int index, bool searchDescendants = false,
+        /// <returns>UIDA_Menu, null if not found</returns>
+        public UIDA_Menu MenuAt(string name, int index, bool searchDescendants = false,
             bool caseSensitive = true)
         {
             if (index < 0)
@@ -417,18 +417,18 @@ namespace UIDeskAutomationLib
                 }
             }
 
-            UIDA_TopLevelMenu menu = new UIDA_TopLevelMenu(returnElement);
+            UIDA_Menu menu = new UIDA_Menu(returnElement);
             return menu;
         }
 
         /// <summary>
-        /// Searches for a top-level menu among the children of the element or its descendants
+        /// Searches for a menu among the children of the element or its descendants
         /// </summary>
         /// <param name="name">menu text, wildcards can be used</param>
         /// <param name="searchDescendants">search descendants, default false</param>
         /// <param name="caseSensitive">search name with case sensitive criteria</param>
-        /// <returns>first UIDA_TopLevelMenu that matches the search criteria, null if not found</returns>
-        public UIDA_TopLevelMenu Menu(string name = null, bool searchDescendants = false,
+        /// <returns>first UIDA_Menu that matches the search criteria, null if not found</returns>
+        public UIDA_Menu Menu(string name = null, bool searchDescendants = false,
             bool caseSensitive = true)
         {
             IUIAutomationElement returnElement = this.FindFirst(UIA_ControlTypeIds.UIA_MenuControlTypeId, name,
@@ -448,29 +448,29 @@ namespace UIDeskAutomationLib
                 }
             }
 
-            UIDA_TopLevelMenu menu = new UIDA_TopLevelMenu(returnElement);
+            UIDA_Menu menu = new UIDA_Menu(returnElement);
             return menu;
         }
 
         /// <summary>
-        /// Returns a collection of TopLevelMenus that matches the search text (name), wildcards can be used.
+        /// Returns a collection of Menus that matches the search text (name), wildcards can be used.
         /// </summary>
-        /// <param name="name">text of TopLevelMenu elements, use null to return all Menus</param>
+        /// <param name="name">text of Menu elements, use null to return all Menus</param>
         /// <param name="searchDescendants">true is search deep through descendants, false is search through children, default false</param>
         /// <param name="caseSensitive">true if name search is done case sensitive, default true</param>
-        /// <returns>all UIDA_TopLevelMenu elements that match the search criteria</returns>
-        public UIDA_TopLevelMenu[] Menus(string name = null, bool searchDescendants = false,
+        /// <returns>all UIDA_Menu elements that match the search criteria</returns>
+        public UIDA_Menu[] Menus(string name = null, bool searchDescendants = false,
             bool caseSensitive = true)
         {
             List<IUIAutomationElement> allMenus = FindAll(UIA_ControlTypeIds.UIA_MenuControlTypeId,
                 name, searchDescendants, false, caseSensitive);
 
-            List<UIDA_TopLevelMenu> menus = new List<UIDA_TopLevelMenu>();
+            List<UIDA_Menu> menus = new List<UIDA_Menu>();
             if (allMenus != null)
             {
                 foreach (IUIAutomationElement crtEl in allMenus)
                 {
-                    menus.Add(new UIDA_TopLevelMenu(crtEl));
+                    menus.Add(new UIDA_Menu(crtEl));
                 }
             }
             return menus.ToArray();
@@ -1214,7 +1214,7 @@ namespace UIDeskAutomationLib
 
             IUIAutomationElement returnElement = null;
 
-            //// looking for the element
+            //// aici caut elementul
             Errors error = Errors.ElementNotFound;
             string fid = this.uiElement.CurrentFrameworkId;
             if (fid == "WPF")
@@ -1701,13 +1701,13 @@ namespace UIDeskAutomationLib
         }
 
         /// <summary>
-        /// Searches a Label in the current element
+        /// Searches a static text in the current element
         /// </summary>
-        /// <param name="name">text of Label, wildcards can be used</param>
+        /// <param name="name">the static text, wildcards can be used</param>
         /// <param name="searchDescendants">true is search deep through descendants, false is search through children, default false</param>
         /// <param name="caseSensitive">true if name search is case sensitive, default true</param>
-        /// <returns>UIDA_Label element, null if not found</returns>
-        public UIDA_Label Label(string name = null, bool searchDescendants = false,
+        /// <returns>UIDA_Text element, null if not found</returns>
+        public UIDA_Text Text(string name = null, bool searchDescendants = false,
             bool caseSensitive = true)
         {
             IUIAutomationElement returnElement = this.FindFirst(UIA_ControlTypeIds.UIA_TextControlTypeId,
@@ -1715,11 +1715,11 @@ namespace UIDeskAutomationLib
 
             if (returnElement == null)
             {
-                Engine.TraceInLogFile("Label method - Label element not found");
+                Engine.TraceInLogFile("Text method - Text element not found");
 
                 if (Engine.ThrowExceptionsWhenSearch == true)
                 {
-                    throw new Exception("Label method - Label element not found");
+                    throw new Exception("Text method - Text element not found");
                 }
                 else
                 {
@@ -1727,28 +1727,28 @@ namespace UIDeskAutomationLib
                 }
             }
 
-            UIDA_Label label = new UIDA_Label(returnElement);
-            return label;
+            UIDA_Text text = new UIDA_Text(returnElement);
+            return text;
         }
 
         /// <summary>
-        /// Searches for a Static Text (Label) with a specified text at a specified index.
+        /// Searches for a Static Text with a specified text at a specified index.
         /// </summary>
-        /// <param name="name">text of Label, wildcards can be used</param>
-        /// <param name="index">index of Label, starts with 1</param>
+        /// <param name="name">the static text, wildcards can be used</param>
+        /// <param name="index">index of element, starts with 1</param>
         /// <param name="searchDescendants">true if search through descendants, false if search only through children, default false</param>
         /// <param name="caseSensitive">true if name search is done case sensitive, default true</param>
-        /// <returns>UIDA_Label element, null if not found</returns>
-        public UIDA_Label LabelAt(string name, int index, bool searchDescendants = false,
+        /// <returns>UIDA_Text element, null if not found</returns>
+        public UIDA_Text TextAt(string name, int index, bool searchDescendants = false,
             bool caseSensitive = true)
         {
             if (index < 0)
             {
-                Engine.TraceInLogFile("LabelAt method - index cannot be negative");
+                Engine.TraceInLogFile("TextAt method - index cannot be negative");
 
                 if (Engine.ThrowExceptionsWhenSearch == true)
                 {
-                    throw new Exception("LabelAt method - index cannot be negative");
+                    throw new Exception("TextAt method - index cannot be negative");
                 }
                 else
                 {
@@ -1763,11 +1763,11 @@ namespace UIDeskAutomationLib
 
             if (error == Errors.ElementNotFound)
             {
-                Engine.TraceInLogFile("LabelAt method - Label element not found");
+                Engine.TraceInLogFile("TextAt method - Text element not found");
 
                 if (Engine.ThrowExceptionsWhenSearch == true)
                 {
-                    throw new Exception("LabelAt method - Label element not found");
+                    throw new Exception("TextAt method - Text element not found");
                 }
                 else
                 {
@@ -1776,11 +1776,11 @@ namespace UIDeskAutomationLib
             }
             else if (error == Errors.IndexTooBig)
             {
-                Engine.TraceInLogFile("LabelAt method - index too big");
+                Engine.TraceInLogFile("TextAt method - index too big");
 
                 if (Engine.ThrowExceptionsWhenSearch == true)
                 {
-                    throw new Exception("LabelAt method - index too big");
+                    throw new Exception("TextAt method - index too big");
                 }
                 else
                 {
@@ -1788,32 +1788,32 @@ namespace UIDeskAutomationLib
                 }
             }
 
-            UIDA_Label label = new UIDA_Label(returnElement);
-            return label;
+            UIDA_Text text = new UIDA_Text(returnElement);
+            return text;
         }
 
         /// <summary>
-        /// Returns a collection of Labels that matches the search text (name), wildcards can be used.
+        /// Returns a collection of Static Texts that matches the search text (name), wildcards can be used.
         /// </summary>
-        /// <param name="name">text of Label elements, use null to return all Labels</param>
+        /// <param name="name">the static text, use null to return all Static Texts</param>
         /// <param name="searchDescendants">true is search deep through descendants, false is search through children, default false</param>
         /// <param name="caseSensitive">true if name search is done case sensitive, default true</param>
-        /// <returns>UIDA_Label elements</returns>
-        public UIDA_Label[] Labels(string name = null, bool searchDescendants = false,
+        /// <returns>UIDA_Text elements</returns>
+        public UIDA_Text[] Texts(string name = null, bool searchDescendants = false,
             bool caseSensitive = true)
         {
-            List<IUIAutomationElement> allLabels = FindAll(UIA_ControlTypeIds.UIA_TextControlTypeId,
+            List<IUIAutomationElement> allTexts = FindAll(UIA_ControlTypeIds.UIA_TextControlTypeId,
                 name, searchDescendants, false, caseSensitive);
 
-            List<UIDA_Label> labels = new List<UIDA_Label>();
-            if (allLabels != null)
+            List<UIDA_Text> texts = new List<UIDA_Text>();
+            if (allTexts != null)
             {
-                foreach (IUIAutomationElement crtEl in allLabels)
+                foreach (IUIAutomationElement crtEl in allTexts)
                 {
-                    labels.Add(new UIDA_Label(crtEl));
+                    texts.Add(new UIDA_Text(crtEl));
                 }
             }
-            return labels.ToArray();
+            return texts.ToArray();
         }
 
         /// <summary>
@@ -2993,6 +2993,7 @@ namespace UIDeskAutomationLib
             List<IUIAutomationElement> allTables = FindAll(UIA_ControlTypeIds.UIA_TableControlTypeId,
                 name, searchDescendants, false, caseSensitive);
 
+            //return allTables.Cast<UIDA_Table>().ToArray();
 			List<UIDA_Table> tables = new List<UIDA_Table>();
             if (allTables != null)
             {
@@ -3109,6 +3110,7 @@ namespace UIDeskAutomationLib
             List<IUIAutomationElement> allDataGrids = FindAll(UIA_ControlTypeIds.UIA_DataGridControlTypeId,
                 name, searchDescendants, false, caseSensitive);
 
+            //return allDataGrids.Cast<UIDA_DataGrid>().ToArray();
 			List<UIDA_DataGrid> dataGrids = new List<UIDA_DataGrid>();
             if (allDataGrids != null)
             {
@@ -3573,6 +3575,7 @@ namespace UIDeskAutomationLib
             List<IUIAutomationElement> allStatusBars = FindAll(UIA_ControlTypeIds.UIA_StatusBarControlTypeId,
                 name, searchDescendants, false, caseSensitive);
 
+            //return allStatusBars.Cast<UIDA_StatusBar>().ToArray();
 			List<UIDA_StatusBar> statusBars = new List<UIDA_StatusBar>();
             if (allStatusBars != null)
             {
@@ -3689,6 +3692,7 @@ namespace UIDeskAutomationLib
             List<IUIAutomationElement> allThumbs = FindAll(UIA_ControlTypeIds.UIA_ThumbControlTypeId,
                 name, searchDescendants, false, caseSensitive);
 
+            //return allThumbs.Cast<UIDA_Thumb>().ToArray();
 			List<UIDA_Thumb> thumbs = new List<UIDA_Thumb>();
             if (allThumbs != null)
             {
@@ -3805,6 +3809,7 @@ namespace UIDeskAutomationLib
             List<IUIAutomationElement> allToolbars = FindAll(UIA_ControlTypeIds.UIA_ToolBarControlTypeId,
                 name, searchDescendants, false, caseSensitive);
 
+            //return allToolbars.Cast<UIDA_ToolBar>().ToArray();
 			List<UIDA_ToolBar> toolbars = new List<UIDA_ToolBar>();
             if (allToolbars != null)
             {
@@ -3921,6 +3926,7 @@ namespace UIDeskAutomationLib
             List<IUIAutomationElement> allTooltips = FindAll(UIA_ControlTypeIds.UIA_ToolTipControlTypeId,
                 name, searchDescendants, false, caseSensitive);
 
+            //return allTooltips.Cast<UIDA_ToolTip>().ToArray();
 			List<UIDA_ToolTip> tooltips = new List<UIDA_ToolTip>();
             if (allTooltips != null)
             {
@@ -4037,6 +4043,7 @@ namespace UIDeskAutomationLib
             List<IUIAutomationElement> allGroups = FindAll(UIA_ControlTypeIds.UIA_GroupControlTypeId,
                 name, searchDescendants, false, caseSensitive);
 
+            //return allGroups.Cast<UIDA_Group>().ToArray();
 			List<UIDA_Group> groups = new List<UIDA_Group>();
             if (allGroups != null)
             {
@@ -4268,6 +4275,7 @@ namespace UIDeskAutomationLib
             List<IUIAutomationElement> allHeaderItems = FindAll(UIA_ControlTypeIds.UIA_HeaderItemControlTypeId,
                 name, searchDescendants, false, caseSensitive);
 
+            //return allHeaderItems.Cast<UIDA_HeaderItem>().ToArray();
 			List<UIDA_HeaderItem> headerItems = new List<UIDA_HeaderItem>();
 			foreach (IUIAutomationElement element in allHeaderItems)
 			{
@@ -4615,6 +4623,7 @@ namespace UIDeskAutomationLib
             List<IUIAutomationElement> allTreeItems = FindAll(UIA_ControlTypeIds.UIA_TreeItemControlTypeId,
                 name, searchDescendants, false, caseSensitive);
 
+            //return allTreeItems.Cast<UIDA_TreeItem>().ToArray();
 			List<UIDA_TreeItem> treeItems = new List<UIDA_TreeItem>();
             if (allTreeItems != null)
             {

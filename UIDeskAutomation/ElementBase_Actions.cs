@@ -130,6 +130,7 @@ namespace UIDeskAutomationLib
             catch (Exception ex)
             {
                 Engine.TraceInLogFile("SendKeys failed: " + ex.Message);
+
                 throw ex;
             }
         }
@@ -405,6 +406,9 @@ namespace UIDeskAutomationLib
         /// <param name="keys">keys pressed, 0 - None keys pressed, 1 - Ctrl key pressed, 2 - Shift key pressed, 3 - both Ctrl and Shift keys pressed</param>
         public void SimulateDoubleClick(int keys = 0)
         {
+            //this.SimulateClick(1, keys);
+            //this.SimulateClick(1, keys);
+
             this.SimulateClick(4, keys);
         }
 
@@ -579,14 +583,14 @@ namespace UIDeskAutomationLib
             int x = -1;
             int y = -1;
 
-            /*tagPOINT point;
-            if (this.uiElement.GetClickablePoint(out point) != 0)
-            {
-                x = point.x;
-                y = point.y;
-            }
-            else
-            {*/
+            //tagPOINT point;
+            //if (this.uiElement.GetClickablePoint(out point) != 0)
+            //{
+            //    x = point.x;
+            //    y = point.y;
+            //}
+            //else
+            //{
                 tagRECT boundingRectangle;
 
                 try

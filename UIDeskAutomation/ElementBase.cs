@@ -365,7 +365,7 @@ namespace UIDeskAutomationLib
 				}
 				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_MenuControlTypeId)
 				{
-					return new UIDA_TopLevelMenu(parent);
+					return new UIDA_Menu(parent);
 				}
 				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_MenuBarControlTypeId)
 				{
@@ -409,7 +409,7 @@ namespace UIDeskAutomationLib
 				}
 				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_TextControlTypeId)
 				{
-					return new UIDA_Label(parent);
+					return new UIDA_Text(parent);
 				}
 				else if (parent.CurrentControlType == UIA_ControlTypeIds.UIA_ToolBarControlTypeId)
 				{

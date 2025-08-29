@@ -31,6 +31,7 @@ namespace UIDeskAutomationLib
 			try
 			{
 				Process proc = Process.Start("chrome.exe");
+				//Engine.TraceInLogFile("pid: " + proc.Id);
 			}
 			catch {}
 			
@@ -65,8 +66,11 @@ namespace UIDeskAutomationLib
 				
 				if (hWndCurrent != null)
 				{
+					//Engine.TraceInLogFile("Window found: " + hWndCurrent.ToString("x"));
+					
 					base.hWnd = hWndCurrent;
 					base.uiElement = Engine.uiAutomation.ElementFromHandle(hWndCurrent);
+					//Engine.TraceInLogFile("Browser name: " + uiElement.CurrentName + ", ControlType: " + uiElement.CurrentLocalizedControlType);
 					
 					retries = 0;
 					while (retries <= 10)
@@ -164,6 +168,7 @@ namespace UIDeskAutomationLib
 					if (oldRuntimeId == null || Engine.uiAutomation.CompareRuntimeIds(newDocument.GetRuntimeId(), oldRuntimeId) == 0)
 					{
 						document = newDocument;
+						//Engine.TraceInLogFile("New url: " + GetDocumentValue(document));
 						break;
 					}
 				}
@@ -188,8 +193,9 @@ namespace UIDeskAutomationLib
 			{
 				return;
 			}
-			
+			//System.Windows.Forms.MessageBox.Show("buttons count: " + buttons.Length);
 			UIDA_Button backButton = buttons[0];
+			//backButton.Highlight();
 			backButton.Invoke();
 		}
 		
@@ -210,6 +216,7 @@ namespace UIDeskAutomationLib
 			}
 		
 			UIDA_Button forwardButton = buttons[1];
+			//backButton.Highlight();
 			forwardButton.Invoke();
 		}
 		

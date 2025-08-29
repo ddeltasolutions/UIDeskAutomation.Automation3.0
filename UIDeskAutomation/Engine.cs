@@ -129,6 +129,7 @@ namespace UIDeskAutomationLib
             try
             {
                 string sLineToWrite = DateTime.Now.ToString("G") + ": " + sMessage + Environment.NewLine;
+
                 File.AppendAllText(Engine.logFileName, sLineToWrite);
             }
             catch { }
@@ -178,6 +179,7 @@ namespace UIDeskAutomationLib
 
             Errors error = Errors.None;
 
+            //while (nWaitMs > 0)
 			while (true)
             {
                 error = Helper.GetWindowAt(IntPtr.Zero, className, windowText, 
@@ -270,6 +272,7 @@ namespace UIDeskAutomationLib
                 index = 1;
             }
 
+            //while (nWaitMs > 0)
 			while (true)
             {
                 windowHandle = Helper.GetTopLevelByProcName(processName, 
@@ -371,6 +374,7 @@ namespace UIDeskAutomationLib
             int nWaitMs = Engine.wait;
             IntPtr windowHandle = IntPtr.Zero;
 
+            //while (nWaitMs > 0)
 			while (true)
             {
                 windowHandle = Helper.GetTopLevelByProcId(processId, className, 
@@ -1158,7 +1162,9 @@ namespace UIDeskAutomationLib
         /// </summary>
 		public void ShowDesktop()
 		{
+			//this.GetDesktopPane().
 			IUIAutomationElement desktopPane = uiAutomation.GetRootElement();
+			//IUIAutomationTreeWalker tw = uiAutomation.ControlViewWalker;
 			TreeScope scope = TreeScope.TreeScope_Children;
 			IUIAutomationCondition trueCondition = Engine.uiAutomation.CreateTrueCondition();
 			
