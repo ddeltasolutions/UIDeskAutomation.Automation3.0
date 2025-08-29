@@ -93,7 +93,7 @@ namespace UIDeskAutomationLib
                     tagRECT boundingRect = this.uiElement.CurrentBoundingRectangle;
                     int x = boundingRect.right - 5;
                     int y = (boundingRect.top + boundingRect.bottom) / 2;
-                    
+                    //Engine.TraceInLogFile("x = " + x + ", y = " + y);
                     Engine.GetInstance().ClickScreenCoordinatesAt(x, y);
                     
                     IUIAutomationTreeWalker tw = Engine.uiAutomation.ControlViewWalker;

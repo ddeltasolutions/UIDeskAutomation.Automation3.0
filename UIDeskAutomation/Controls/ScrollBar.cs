@@ -11,8 +11,10 @@ namespace UIDeskAutomationLib
     /// </summary>
     public class UIDA_ScrollBar: GenericSpinner
     {
-        public UIDA_ScrollBar(IUIAutomationElement el): base(el) {}
-		
+        public UIDA_ScrollBar(IUIAutomationElement el): base(el)
+        {
+            //this.uiElement = el;
+        }
 		private const int THIS_TIMEOUT = 1;
 
         /// <summary>

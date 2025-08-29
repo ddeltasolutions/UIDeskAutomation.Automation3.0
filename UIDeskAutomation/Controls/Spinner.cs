@@ -12,7 +12,10 @@ namespace UIDeskAutomationLib
     /// </summary>
     public class UIDA_Spinner: GenericSpinner
     {
-        public UIDA_Spinner(IUIAutomationElement el): base(el) {}
+        public UIDA_Spinner(IUIAutomationElement el): base(el)
+        {
+            //this.uiElement = el;
+        }
 
         /// <summary>
         /// Increment the value of spinner. Is like pressing the up arrow.

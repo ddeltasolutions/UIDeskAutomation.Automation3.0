@@ -212,6 +212,9 @@ namespace UIDeskAutomationLib
 
 				try
 				{
+					/*if (((value == true) && (togglePattern.CurrentToggleState != ToggleState.ToggleState_On)) ||
+						((value == false) && (togglePattern.CurrentToggleState == ToggleState.ToggleState_On)))*/
+						
 					if (((value == true) && (togglePattern.CurrentToggleState != ToggleState.ToggleState_On)) ||
 						((value == false) && (togglePattern.CurrentToggleState != ToggleState.ToggleState_Off)))
 					{

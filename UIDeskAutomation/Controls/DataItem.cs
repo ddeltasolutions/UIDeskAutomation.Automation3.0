@@ -172,6 +172,7 @@ namespace UIDeskAutomationLib
                     
                     if (gridPattern != null && m_index >= 0)
                     {
+                        //Engine.TraceInLogFile("columnIndex = " + columnIndex);
                         IUIAutomationElement el = gridPattern.GetItem(m_index, columnIndex);
                         return (new UIDA_Custom(el)).GetText();
                     }

@@ -188,6 +188,14 @@ namespace UIDeskAutomationLib
             while (index != 0);
             
 			return (index == 0 ? crt : null);
+            /*if (index == 0)
+            {
+                return crt;
+            }
+            else
+            {
+                return null;
+            }*/
         }
         
         /// <summary>

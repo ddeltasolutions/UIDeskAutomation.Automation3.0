@@ -86,9 +86,9 @@ namespace UIDeskAutomationLib
             return new UIDA_Image(uiElement);
         }
 
-        public UIDA_Label AsLabel()
+        public UIDA_Text AsText()
         {
-            return new UIDA_Label(uiElement);
+            return new UIDA_Text(uiElement);
         }
 
         public UIDA_List AsList()
@@ -191,9 +191,9 @@ namespace UIDeskAutomationLib
             return new UIDA_ToolTip(uiElement);
         }
 
-        public UIDA_TopLevelMenu AsTopLevelMenu()
+        public UIDA_Menu AsMenu()
         {
-            return new UIDA_TopLevelMenu(uiElement);
+            return new UIDA_Menu(uiElement);
         }
 
         public UIDA_Tree AsTree()

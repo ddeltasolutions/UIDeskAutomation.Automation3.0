@@ -251,6 +251,7 @@ namespace UIDeskAutomationLib
                     if (className.ToString() == "SysListView32")
                     { 
                         // Win32 standard listview control
+
                         int index = this.Index;
 
                         IntPtr itemState = UnsafeNativeFunctions.SendMessage(
